@@ -24,12 +24,18 @@
     <ClCompile Include="session.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="..\binary_file_manager\binary_file_manager.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="session.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="listener.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\binary_file_manager\binary_file_manager.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
