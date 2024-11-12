@@ -9,7 +9,7 @@ example:
 > file_server 0.0.0.0 80 4 /usr/files/server
 
 
-**[shut]**: 
+**[shut]**
 >x
 
 
