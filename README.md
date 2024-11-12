@@ -1,23 +1,43 @@
 # Server-Client File Exchanger 
-> Websocket implementation to exchange files via websocket
-
-## Installation
-
-OS X & Linux:
-
-```sh
-npm install my-crazy-module --save
-```
-
-Windows:
-
-```sh
-edit autoexec.bat
-```
+> Server-Client mode implementation to exchange files via websocket
 
 ## Usage example
 
-A few motivating and useful examples of how your product can be used. Spice this up with code blocks and potentially more screenshots.
+[Server] - response request from clients
+
+run: 
+> file_server <host> <port> <threads> <file_root_root>
+run example:
+> file_server 0.0.0.0 80 4 /usr/files/server
+
+shut:
+>x
+
+[Client] - get/post file(s) via command lines.
+
+run:
+> file_client <host> <port> <file_root_root>
+example:
+> file_client 192.168.0.1 80 /usr/files/client
+
+shut:
+>x
+
+get:
+>get -{scope:a|s} {file_name}
+get all example:
+>get -a
+get single example:
+>get -s server-client.png
+
+post:
+>post -{scope:a|s} {file_name}
+post all example:
+>get -a
+post single example:
+>get -s client-server.png
+
+
 
 _For more examples and usage, please refer to the [Wiki][wiki]._
 
