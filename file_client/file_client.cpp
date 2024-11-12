@@ -12,7 +12,7 @@ int main(int argc, char** argv)
     if (argc != 4)
     {
         std::cerr <<
-            "Usage: file_client <host> <port> <file_root_root>\n" <<
+            "Usage: file_client {host} {port} {dir}\n" <<
             "Example:\n" <<
             "    file_client 0.0.0.1 80 /usr/file\n" <<
             "    file_client 127.0.0.1 8080 c:/source/files\n";
