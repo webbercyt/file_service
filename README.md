@@ -23,19 +23,19 @@ Please see details in [C4 diagrams](https://github.com/webbercyt/file_service/bl
 
 ## Server usage example
 
-To start the server, use the 'run' command: run file_server <host> <port> <threads> <file_root_root>
+* To start the server, use the 'run' command: run file_server <host> <port> <threads> <file_root_root>
 
 example: 
 > file_server 0.0.0.0 80 4 /usr/files/server
 
 
-To shut down the server, use the 'x' command
+* To shut down the server, use the 'x' command
 >x
 
 
 ## Client usage example
 
-To start the client, use the 'run' command: file_client <host> <port> <file_root_root>
+* To start the client, use the 'run' command: file_client <host> <port> <file_root_root>
 
 example: 
 > file_client 192.168.0.1 80 /usr/files/client
@@ -45,7 +45,7 @@ To shut down the client, use the 'x' command
 >x
 
 
-To retrive file(s) from server, use the 'get' command: get -{scope:a|s} {file_name} 
+* To retrive file(s) from server, use the 'get' command: get -{scope:a|s} {file_name} 
 	
    {scope} = -a : get all files
    
@@ -58,8 +58,7 @@ or
 >get -s server-client.png
 
 
-
-To send file(s) to server, run 'post' command: post -{scope:a|s} {file_name}
+* To send file(s) to server, run 'post' command: post -{scope:a|s} {file_name}
 
 	
    {scope} = -a : get all files
