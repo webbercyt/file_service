@@ -13,7 +13,7 @@ session::session(net::io_context& ioc)
 
 void session::run(char const* host, char const* port, std::shared_ptr<binary_file_manager> file_manager)
 {
-    assert(file_manager && text::file_manager_must_not_null);
+    assert(file_manager);
     file_manager_ = file_manager;
 
     // Save these for later

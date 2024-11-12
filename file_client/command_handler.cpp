@@ -26,8 +26,8 @@ command_handler::command_handler(
     std::shared_ptr<binary_file_manager> file_manager) :
         session_(session), file_manager_(file_manager)
 {
-    assert(session_ && text::session_must_not_null.c_str());
-    assert(file_manager_ && text::file_manager_must_not_null.c_str());
+    assert(session_);
+    assert(file_manager_);
 }
 
 void command_handler::run()
