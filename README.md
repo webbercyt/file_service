@@ -3,7 +3,7 @@
 
 ![](infrastructure.png)
 
-See
+Please see details in [C4 diagrams](https://github.com/webbercyt/file_service/blob/master/diagrams.pdf).
 
 ## Server usage example
 
