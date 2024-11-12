@@ -12,9 +12,11 @@ Please see details in [C4 diagrams](https://github.com/webbercyt/file_service/bl
 
 1. Dependencies
 
-   minimum dependencies are stored under ./third_party, no more dependency setup is required.
+   c++17
 
-2. Build
+   boost 1.86.0 (minimum dependencies of boost are stored under ./third_party, idealy there is no more dependency setup is required.)
+
+3. Build
 
    cmake build file_server and file_client seperately
 
