@@ -14,7 +14,7 @@ int main(int argc, char** argv)
         std::cerr <<
             "Usage: file-client <host> <port> <file_root_root>\n" <<
             "Example:\n" <<
-            "    file-client 0.0.0.0 80 /usr/file\n" <<
+            "    file-client 0.0.0.1 80 /usr/file\n" <<
             "    file-client 127.0.0.1 8080 c:/source/files\n";
         return EXIT_FAILURE;
     }

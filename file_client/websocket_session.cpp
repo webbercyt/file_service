@@ -48,8 +48,8 @@ void websocket_session::send(const std::string& s)
 
 void websocket_session::reconnect()
 {
-    std::cout << "reconnecting ...\n";
-    //reconnect in 10s
+    logger::info("reconnecting ...");
+
     std::this_thread::sleep_for(std::chrono::seconds(10));
 
     resolver_.async_resolve(
@@ -120,7 +120,7 @@ void websocket_session::on_handshake(beast::error_code ec)
     if (ec)
         return logger::fail(ec, "handshake");
 
-    std::cout << "succeeded to connect " << host_ << ":" << port_ << std::endl;
+    logger::info("succeeded to connect " + host_ + ":" + port_);
 
     // read a message into buffer
     read();
@@ -222,5 +222,5 @@ void websocket_session::on_close(beast::error_code ec)
     if (ec)
         return logger::fail(ec, "close");
 
-    std::cout << "connnection closed\n";
+    logger::info("connnection closed");
 }
