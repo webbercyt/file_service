@@ -49,16 +49,13 @@ session::on_accept(beast::error_code ec)
     if (ec)
         return fail(ec, "accept");
 
-    {
-        std::cout << "accept websocket handshake" << std::endl;
-    }
+    std::cout << "websocket handshake accepted" << std::endl;
 
     // Read a message
     do_read();
 }
 
-void
-session::do_read()
+void session::do_read()
 {
     // Read a message into our buffer
     ws_.async_read(
@@ -68,8 +65,7 @@ session::do_read()
             shared_from_this()));
 }
 
-void
-session::on_read(
+void session::on_read(
     beast::error_code ec,
     std::size_t bytes_transferred)
 {
@@ -84,55 +80,37 @@ session::on_read(
 
     // Echo the message
     ws_.text(ws_.got_text());
-
-    boost::json::object response;
-    {
-        auto data = beast::buffers_to_string(buffer_.data());
-        auto obj = boost::json::parse(data).as_object();
-
-        if (obj.find("uuid") != obj.end())
-        {
-            response["uuid"] = obj["uuid"];
-            response["response"] = "accepted";
-        }
-    }
-    std::string b = boost::json::serialize(response);
-
     ws_.async_write(
-        /*buffer_.data(),*/net::buffer("response"),
-        /*net::buffer(b),*/
+        buffer_.data(),
         beast::bind_front_handler(
             &session::on_write,
             shared_from_this()));
 
+    //// Echo the message
     //ws_.text(ws_.got_text());
-//                //{
-//                //    auto data = beast::buffers_to_string(buffer_.data());
-//                //    auto obj = boost::json::parse(data).as_object();
-//
-//                //    boost::json::object response;
-//                //    if (obj.find("uuid") != obj.end())
-//                //    {
-//                //        response["uuid"] = obj["uuid"];
-//                //        response["response"] = "accepted";
-//                //        //ws_.write(net::buffer();
-//                //    }
-//
-//                //    /*{
-//                //        obj["target"] = "response.txt";
-//                //        ws_.write(net::buffer(boost::json::serialize(obj)));
-//                //    }*/
-//
-//                //    ws_.async_write(
-//                //        net::buffer(boost::json::serialize(response)),
-//                //        beast::bind_front_handler(
-//                //            &session::on_write,
-//                //            shared_from_this()));
-//                //}
+
+    //boost::json::object response;
+    //{
+    //    auto data = beast::buffers_to_string(buffer_.data());
+    //    auto obj = boost::json::parse(data).as_object();
+
+    //    if (obj.find("uuid") != obj.end())
+    //    {
+    //        response["uuid"] = obj["uuid"];
+    //        response["response"] = "accepted";
+    //    }
+    //}
+    //std::string b = boost::json::serialize(response);
+
+    //ws_.async_write(
+    //    /*buffer_.data(),*/net::buffer("response"),
+    //    /*net::buffer(b),*/
+    //    beast::bind_front_handler(
+    //        &session::on_write,
+    //        shared_from_this()));
 }
 
-void
-session::on_write(
+void session::on_write(
     beast::error_code ec,
     std::size_t bytes_transferred)
 {
