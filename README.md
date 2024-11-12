@@ -23,7 +23,7 @@ Please see details in [C4 diagrams](https://github.com/webbercyt/file_service/bl
 
 ## Server usage example
 
-* To start the server, run the command: file_server <host> <port> <threads> <file_root_root>
+* To start the server, run the command: file_server {host} {port} {threads} {file_root_path}
 
 	example: 
 	> file_server 0.0.0.0 80 4 /usr/files/server
@@ -35,7 +35,7 @@ Please see details in [C4 diagrams](https://github.com/webbercyt/file_service/bl
 
 ## Client usage example
 
-* To start the client, run the command: file_client <host> <port> <file_root_root>
+* To start the client, run the command: file_client {host} {port} {file_root_path}
 
 	example: 
 	> file_client 192.168.0.1 80 /usr/files/client
