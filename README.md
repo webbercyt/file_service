@@ -14,7 +14,9 @@ Please see details in [C4 diagrams](https://github.com/webbercyt/file_service/bl
 
    c++17
 
-   boost 1.86.0 (the minimum dependencies of boost are stored in ./third_party, idealy there is no more dependency setup required.)
+   boost 1.86.0
+
+   	the minimum dependencies of boost are stored in ./third_party, idealy there is no more dependency setup required.
 
 3. Build
 
@@ -23,7 +25,7 @@ Please see details in [C4 diagrams](https://github.com/webbercyt/file_service/bl
 
 ## Server usage example
 
-* To start the server, use the 'run' command: run file_server <host> <port> <threads> <file_root_root>
+* To start the server, run the command: file_server <host> <port> <threads> <file_root_root>
 
 example: 
 > file_server 0.0.0.0 80 4 /usr/files/server
@@ -35,7 +37,7 @@ example:
 
 ## Client usage example
 
-* To start the client, use the 'run' command: file_client <host> <port> <file_root_root>
+* To start the client, run the command: file_client <host> <port> <file_root_root>
 
 example: 
 > file_client 192.168.0.1 80 /usr/files/client
