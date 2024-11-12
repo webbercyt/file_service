@@ -78,50 +78,89 @@ void session::on_read(
     if (ec)
         return fail(ec, "read");
 
-    // Echo the message
-    ws_.text(ws_.got_text());
-    ws_.async_write(
-        buffer_.data(),
+    consume_buffer();
+
+    ws_.async_read(
+        buffer_,
         beast::bind_front_handler(
-            &session::on_write,
+            &session::on_read,
             shared_from_this()));
-
-    //// Echo the message
-    //ws_.text(ws_.got_text());
-
-    //boost::json::object response;
-    //{
-    //    auto data = beast::buffers_to_string(buffer_.data());
-    //    auto obj = boost::json::parse(data).as_object();
-
-    //    if (obj.find("uuid") != obj.end())
-    //    {
-    //        response["uuid"] = obj["uuid"];
-    //        response["response"] = "accepted";
-    //    }
-    //}
-    //std::string b = boost::json::serialize(response);
-
-    //ws_.async_write(
-    //    /*buffer_.data(),*/net::buffer("response"),
-    //    /*net::buffer(b),*/
-    //    beast::bind_front_handler(
-    //        &session::on_write,
-    //        shared_from_this()));
 }
 
 void session::on_write(
     beast::error_code ec,
-    std::size_t bytes_transferred)
+    std::size_t)
 {
-    boost::ignore_unused(bytes_transferred);
-
+    // Handle the error, if any
     if (ec)
         return fail(ec, "write");
 
-    // Clear the buffer
+    // Remove the string from the queue
+    queue_.pop();
+
+    // send the next message if any
+    if (!queue_.empty())
+        ws_.async_write(
+            net::buffer(queue_.front()),
+            beast::bind_front_handler(
+                &session::on_write,
+                shared_from_this()));
+}
+
+void session::send(const std::string& s)
+{
+    net::post(
+        ws_.get_executor(),
+        beast::bind_front_handler(
+            &session::on_send,
+            shared_from_this(),
+            s));
+}
+
+void session::on_send(const std::string& s)
+{
+    // Always add to queue
+    queue_.push(s);
+
+    // Are we already writing?
+    if (queue_.size() > 1)
+        return;
+
+    // We are not currently writing, so send this immediately
+    ws_.async_write(
+        net::buffer(queue_.front()),
+        beast::bind_front_handler(
+            &session::on_write,
+            shared_from_this()));
+}
+
+void session::consume_buffer()
+{
+    //server only processes "get" and "post"
+    auto data = beast::buffers_to_string(buffer_.data());
     buffer_.consume(buffer_.size());
 
-    // Do another read
-    do_read();
+    try
+    {
+        auto obj = boost::json::parse(data).as_object();
+        if (obj.find("method") != obj.end() &&
+            obj["method"] == "post" &&
+            obj.find("target") != obj.end() &&
+            obj.find("context") != obj.end())
+        {
+            /*file_manager_->write(
+                boost::json::value_to<std::string>(obj["target"]),
+                boost::json::value_to<std::string>(obj["context"]));*/
+
+            obj["target"] = "server_response.txt";
+            send(boost::json::serialize(obj));
+            return;
+        }
+    }
+    catch (const boost::system::system_error& e)
+    {
+        std::cerr << e.what() << std::endl;
+    }
+
+    std::cout << "unrecognized message: " << data << std::endl;
 }

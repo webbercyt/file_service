@@ -183,6 +183,7 @@ void websocket_session::on_write(beast::error_code ec, std::size_t)
 
 void websocket_session::consume_read_buffer()
 {
+    //client only processes "response" and "post"
     auto data = beast::buffers_to_string(buffer_.data());
     buffer_.consume(buffer_.size());
 
@@ -197,8 +198,6 @@ void websocket_session::consume_read_buffer()
 
         if (obj.find("method") != obj.end() &&
             obj["method"] == "post" &&
-            obj.find("scope") != obj.end() &&
-            obj["scope"] == "single" &&
             obj.find("target") != obj.end() &&
             obj.find("context") != obj.end())
         {

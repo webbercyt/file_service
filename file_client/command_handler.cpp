@@ -140,7 +140,6 @@ void command_handler::send_post_command(const std::string& file_name)
     json::object obj;
     obj["uuid"] = get_random_uuid();
     obj["method"] = "post";
-    obj["scope"] = scope_map_.at(file_single);
 
     std::string context;
     if (!file_manager_->read(file_name, context))

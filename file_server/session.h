@@ -12,6 +12,7 @@
 #include <string>
 #include <thread>
 #include <vector>
+#include <queue>
 #include <boost/json.hpp>
 
 namespace beast = boost::beast;         // from <boost/beast.hpp>
@@ -37,6 +38,9 @@ public:
     // Get on the correct executor
     void run();
 
+    // Send a message
+    void send(const std::string& s);
+
 private:
     // Start the asynchronous operation
     void on_run();
@@ -52,6 +56,11 @@ private:
         beast::error_code ec,
         std::size_t bytes_transferred);
 
+    void on_send(const std::string& s);
+
+    void consume_buffer();
+
     websocket::stream<beast::tcp_stream> ws_;
     beast::flat_buffer buffer_;
+    std::queue<std::string> queue_;
 };
