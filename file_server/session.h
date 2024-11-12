@@ -21,12 +21,12 @@ namespace websocket = beast::websocket; // from <boost/beast/websocket.hpp>
 namespace net = boost::asio;            // from <boost/asio.hpp>
 using tcp = boost::asio::ip::tcp;       // from <boost/asio/ip/tcp.hpp>
 
-// Report a failure
-static void
-fail(beast::error_code ec, char const* what)
-{
-    std::cerr << what << ": " << ec.message() << "\n";
-}
+//// Report a failure
+//static void
+//fail(beast::error_code ec, char const* what)
+//{
+//    std::cerr << what << ": " << ec.message() << "\n";
+//}
 
 // Echoes back all received WebSocket messages
 class session : public std::enable_shared_from_this<session>

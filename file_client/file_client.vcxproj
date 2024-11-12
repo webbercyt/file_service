@@ -105,7 +105,7 @@
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <AdditionalOptions>/bigobj %(AdditionalOptions)</AdditionalOptions>
-      <AdditionalIncludeDirectories>C:\Users\cheny\source\repos\thirdparty\boost_1_86_0;..\binary_file_manager;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>C:\Users\cheny\source\repos\thirdparty\boost_1_86_0;..\utils;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <Link>
@@ -124,7 +124,7 @@
       <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <AdditionalOptions>/bigobj %(AdditionalOptions)</AdditionalOptions>
-      <AdditionalIncludeDirectories>C:\Users\cheny\source\repos\thirdparty\boost_1_86_0;..\binary_file_manager;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>C:\Users\cheny\source\repos\thirdparty\boost_1_86_0;..\utils;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <Link>
@@ -137,13 +137,14 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="..\binary_file_manager\binary_file_manager.cpp" />
+    <ClCompile Include="..\utils\binary_file_manager.cpp" />
     <ClCompile Include="command_handler.cpp" />
     <ClCompile Include="file_client.cpp" />
     <ClCompile Include="websocket_session.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\binary_file_manager\binary_file_manager.h" />
+    <ClInclude Include="..\utils\binary_file_manager.h" />
+    <ClInclude Include="..\utils\logger.h" />
     <ClInclude Include="command_handler.h" />
     <ClInclude Include="websocket_session.h" />
   </ItemGroup>

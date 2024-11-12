@@ -1,4 +1,5 @@
 #include "session.h"
+#include "logger.h"
 
 session::session(tcp::socket&& socket)
     : ws_(std::move(socket))
@@ -47,9 +48,9 @@ void
 session::on_accept(beast::error_code ec)
 {
     if (ec)
-        return fail(ec, "accept");
+        return logger::fail(ec, "accept");
 
-    std::cout << "websocket handshake accepted" << std::endl;
+    logger::info("websocket handshake accepted.");
 
     // Read a message
     do_read();
@@ -76,7 +77,7 @@ void session::on_read(
         return;
 
     if (ec)
-        return fail(ec, "read");
+        return logger::fail(ec, "read");
 
     consume_buffer();
 
@@ -93,7 +94,7 @@ void session::on_write(
 {
     // Handle the error, if any
     if (ec)
-        return fail(ec, "write");
+        return logger::fail(ec, "write");
 
     // Remove the string from the queue
     queue_.pop();
@@ -143,6 +144,15 @@ void session::consume_buffer()
     try
     {
         auto obj = boost::json::parse(data).as_object();
+        
+        boost::json::object response;
+        if (obj.find("uuid") != obj.end())
+        {
+            response["uuid"] = obj["uuid"];
+            response["response"] = "accepted";
+            send(boost::json::serialize(response));
+        }
+        
         if (obj.find("method") != obj.end() &&
             obj["method"] == "post" &&
             obj.find("target") != obj.end() &&
@@ -162,5 +172,5 @@ void session::consume_buffer()
         std::cerr << e.what() << std::endl;
     }
 
-    std::cout << "unrecognized message: " << data << std::endl;
+    logger::info("unrecognized message: " + data);
 }

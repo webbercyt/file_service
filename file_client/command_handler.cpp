@@ -1,6 +1,7 @@
 #include "command_handler.h"
 #include "websocket_session.h"
 #include "binary_file_manager.h"
+#include "logger.h"
 #include <boost/json.hpp>
 #include <boost/uuid/uuid.hpp> 
 #include <boost/uuid/uuid_generators.hpp> 
@@ -20,11 +21,6 @@ const std::map<std::string, std::string, std::less<>> scope_map_ = {
     {file_list,     "list"}, 
     {file_all,      "all"}, 
     {file_single,   "single"} };
-
-void fail(std::string_view what)
-{
-    std::cout << "error: " << what << "\n";
-}
 
 std::string get_random_uuid()
 {
@@ -67,7 +63,7 @@ void command_handler::handle(const std::string& command)
     auto space_pos = command.find_first_of(" ");
     if (space_pos == std::string::npos)
     {
-        fail("unrecognized command.");
+        logger::info("unrecognized command.");
         return;
     }
 
@@ -84,7 +80,7 @@ void command_handler::handle(const std::string& command)
     }
     else
     {
-        fail("unrecognized command.");
+        logger::info("unrecognized command.");
     }
 }
 
@@ -94,7 +90,7 @@ void command_handler::process_get_command(const std::string& param)
         param != file_all && 
         param.find(file_single) == std::string::npos)
     {
-        fail("unrecognized command.");
+        logger::info("unrecognized command.");
         return;
     }
 
@@ -130,7 +126,7 @@ void command_handler::process_post_command(const std::string& param)
     }
     else
     {
-        fail("unrecognized command.");
+        logger::info("unrecognized command.");
         return;
     }
 }

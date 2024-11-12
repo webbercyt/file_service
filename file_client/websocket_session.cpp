@@ -1,13 +1,8 @@
 #include "websocket_session.h"
 #include "binary_file_manager.h"
+#include "logger.h"
 #include <boost/json.hpp>
 #include <cassert>
-
-// Report a failure
-void fail(beast::error_code ec, char const* what)
-{
-    std::cerr << what << ": " << ec.message() << "\n";
-}
 
 websocket_session::websocket_session(net::io_context& ioc)
     : resolver_(net::make_strand(ioc))
@@ -35,6 +30,14 @@ void websocket_session::run(char const* host, char const* port, std::shared_ptr<
 
 void websocket_session::send(const std::string& s)
 {
+    const std::string context_prefix = (const char[12])"\"context\"=\"";
+
+    //log message sent without context
+    auto p = s.find(context_prefix);
+    p == std::string::npos ?
+        logger::info("sent: " + s) :
+        logger::info("sent: " + s.substr(0, p));
+
     net::post(
         ws_.get_executor(),
         beast::bind_front_handler(
@@ -60,7 +63,7 @@ void websocket_session::reconnect()
 void websocket_session::on_resolve(beast::error_code ec, tcp::resolver::results_type results)
 {
     if (ec)
-        return fail(ec, "resolve");
+        return logger::fail(ec, "resolve");
 
     // Set the timeout for the operation
     beast::get_lowest_layer(ws_).expires_after(std::chrono::seconds(30));
@@ -77,7 +80,7 @@ void websocket_session::on_connect(beast::error_code ec, tcp::resolver::results_
 {
     if (ec)
     {
-        fail(ec, "connect");
+        logger::fail(ec, "connect");
         reconnect();
         return;
     }
@@ -115,7 +118,7 @@ void websocket_session::on_connect(beast::error_code ec, tcp::resolver::results_
 void websocket_session::on_handshake(beast::error_code ec)
 {
     if (ec)
-        return fail(ec, "handshake");
+        return logger::fail(ec, "handshake");
 
     std::cout << "succeeded to connect " << host_ << ":" << port_ << std::endl;
 
@@ -137,7 +140,7 @@ void websocket_session::on_read(beast::error_code ec, std::size_t bytes_transfer
     boost::ignore_unused(bytes_transferred);
 
     if (ec)
-        return fail(ec, "read");
+        return logger::fail(ec, "read");
 
     //consume buffer
     consume_read_buffer();
@@ -167,7 +170,7 @@ void websocket_session::on_write(beast::error_code ec, std::size_t)
 {
     // Handle the error, if any
     if (ec)
-        return fail(ec, "write");
+        return logger::fail(ec, "write");
 
     // Remove the string from the queue
     queue_.pop();
@@ -226,7 +229,7 @@ void websocket_session::close()
 void websocket_session::on_close(beast::error_code ec)
 {
     if (ec)
-        return fail(ec, "close");
+        return logger::fail(ec, "close");
 
     std::cout << "connnection closed\n";
 }

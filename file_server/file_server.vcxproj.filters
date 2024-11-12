@@ -24,7 +24,7 @@
     <ClCompile Include="session.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\binary_file_manager\binary_file_manager.cpp">
+    <ClCompile Include="..\utils\binary_file_manager.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -35,7 +35,10 @@
     <ClInclude Include="listener.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\binary_file_manager\binary_file_manager.h">
+    <ClInclude Include="..\utils\binary_file_manager.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\utils\logger.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
