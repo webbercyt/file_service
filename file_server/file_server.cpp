@@ -45,7 +45,7 @@ int main(/*int argc, char** argv*/)
     net::io_context ioc{ threads };
 
     // Create and launch a listening port
-    std::make_shared<listener>(ioc, tcp::endpoint{ address, port })->run();
+    std::make_shared<listener>(ioc, tcp::endpoint{ address, port }, file_manager)->run();
 
     // Run the I/O service on the requested number of threads
     std::vector<std::thread> v;

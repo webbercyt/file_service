@@ -1,11 +1,14 @@
 #include "listener.h"
+#include "binary_file_manager.h"
 #include "logger.h"
 
 listener::listener(
     net::io_context& ioc,
-    tcp::endpoint endpoint)
+    tcp::endpoint endpoint,
+    std::shared_ptr<binary_file_manager> file_manager)
     : ioc_(ioc)
     , acceptor_(ioc)
+    , file_manager_(file_manager)
 {
     beast::error_code ec;
 
@@ -68,7 +71,7 @@ void listener::on_accept(beast::error_code ec, tcp::socket socket)
     else
     {
         // Create the session and run it
-        std::make_shared<session>(std::move(socket))->run();
+        std::make_shared<session>(std::move(socket), file_manager_)->run();
     }
 
     // Accept another connection

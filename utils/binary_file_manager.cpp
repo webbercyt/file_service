@@ -1,5 +1,6 @@
 #include "binary_file_manager.h"
 #include "logger.h"
+#include "resource.h"
 #include <boost/algorithm/hex.hpp>
 #include <filesystem>
 #include <iostream>
@@ -22,7 +23,8 @@ bool binary_file_manager::read(std::string_view file_name, std::string& context,
 {
 	if (file_name.empty())
 	{
-		logger::error("cannot read file with empty name");
+		error = text::cannot_read_no_name_file;
+		logger::error(error);
 		return false;
 	}
 
@@ -46,11 +48,13 @@ bool binary_file_manager::read(std::string_view file_name, std::string& context,
 			return true;
 		}
 
-		logger::error("failed to get file context. file is opened by other process or path is invalid.");
+		error = text::fail_get_file_context;
+		logger::error(error);
 	}
 	catch (const std::filesystem::filesystem_error& e)
 	{
-		logger::error("filesystem error: " + std::string(e.what()));
+		error = text::filesystem_error + std::string(e.what());
+		logger::error(error);
 	}
 	
 	return false;
@@ -66,7 +70,8 @@ bool binary_file_manager::write(std::string_view file_name, std::string_view con
 {
 	if (file_name.empty())
 	{
-		logger::error("cannot read file with empty name");
+		error = text::cannot_read_no_name_file;
+		logger::error(error);
 		return false;
 	}
 
@@ -79,7 +84,8 @@ bool binary_file_manager::write(std::string_view file_name, std::string_view con
 		std::ofstream out_file(path, std::ios::binary);
 		if (!out_file.is_open())
 		{
-			logger::error("failed to open the file.");
+			error = text::fail_open_file;
+			logger::error(error);
 			return false;
 		}
 
@@ -93,7 +99,8 @@ bool binary_file_manager::write(std::string_view file_name, std::string_view con
 	}
 	catch (const std::filesystem::filesystem_error& e)
 	{
-		logger::error("filesystem error: " + std::string(e.what()));
+		error = text::filesystem_error + std::string(e.what());
+		logger::error(error);
 	}
 	
 	return false;
@@ -120,10 +127,12 @@ void binary_file_manager::create_root_folder() const
 			return;
 
 		if (!std::filesystem::create_directory(root_path_))
-			logger::error("failed to create directory: " + root_path_);
+		{
+			logger::error(text::fail_create_dir + root_path_);
+		}
 	}
 	catch (const std::filesystem::filesystem_error& e)
 	{
-		logger::error("filesystem error: " + std::string(e.what()));
+		logger::error(text::filesystem_error + std::string(e.what()));
 	}
 }

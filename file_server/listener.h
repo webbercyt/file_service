@@ -20,6 +20,7 @@ namespace websocket = beast::websocket;
 namespace net = boost::asio;
 using tcp = boost::asio::ip::tcp;
 
+class binary_file_manager;
 // Accepts incoming connections and launches the sessions
 class listener : public std::enable_shared_from_this<listener>
 {
@@ -29,7 +30,8 @@ class listener : public std::enable_shared_from_this<listener>
 public:
     listener(
         net::io_context& ioc,
-        tcp::endpoint endpoint);
+        tcp::endpoint endpoint,
+        std::shared_ptr<binary_file_manager> file_manager);
 
     // Start accepting incoming connections
     void run();
@@ -37,4 +39,6 @@ public:
 private:
     void do_accept();
     void on_accept(beast::error_code ec, tcp::socket socket);
+
+    std::shared_ptr<binary_file_manager> file_manager_;
 };

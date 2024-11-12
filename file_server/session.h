@@ -22,12 +22,15 @@ namespace websocket = beast::websocket; // from <boost/beast/websocket.hpp>
 namespace net = boost::asio;            // from <boost/asio.hpp>
 using tcp = boost::asio::ip::tcp;       // from <boost/asio/ip/tcp.hpp>
 
-// Echoes back all received WebSocket messages
+struct json_message_base;
+class binary_file_manager;
 class session : public std::enable_shared_from_this<session>
 {
 public:
     // Take ownership of the socket
-    explicit session(tcp::socket&& socket);
+    explicit session(
+        tcp::socket&& socket,
+        std::shared_ptr<binary_file_manager> file_manager);
     ~session();
 
     // Get on the correct executor
@@ -54,10 +57,13 @@ private:
     void on_send(const std::string& s);
 
     void consume_buffer();
+    void process_get_message(std::shared_ptr<json_message_base> msg);
+    void process_post_message(std::shared_ptr<json_message_base> msg);
 
     websocket::stream<beast::tcp_stream> ws_;
     beast::flat_buffer buffer_;
     std::queue<std::string> queue_;
+    std::shared_ptr<binary_file_manager> file_manager_;
 
     static uint64_t clients_;
     static std::mutex clients_mutex_;
