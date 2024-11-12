@@ -98,9 +98,7 @@ void command_handler::process_get_command(const std::string& param)
         msg.scope_ = get_scope::e_gs_all;
     }
 
-    json::object obj;
-    msg.to_json(obj);
-    session_->send(json::serialize(obj));
+    session_->send(msg.serialize());
 }
 
 void command_handler::process_post_command(const std::string& param)
@@ -134,9 +132,7 @@ void command_handler::send_post_command(const std::string& file_name)
     msg.target_ = file_name;
     msg.context_ = context;
 
-    json::object obj;
-    msg.to_json(obj);
-    session_->send(json::serialize(obj));
+    session_->send(msg.serialize());
 }
 
 std::string command_handler::get_file_name(std::string_view param) const

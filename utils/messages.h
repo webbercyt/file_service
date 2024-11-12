@@ -31,6 +31,13 @@ struct json_message_base
 		obj["uuid"] = uuid_;
 	}
 
+	std::string serialize()
+	{
+		json::object obj;
+		to_json(obj);
+		return json::serialize(obj);
+	}
+
 	static std::shared_ptr<json_message_base> parse(const std::string& s)
 	{
 		json::object obj;
