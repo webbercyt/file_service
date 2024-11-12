@@ -3,21 +3,21 @@
 
 ## Server usage example
 
-**run**: file_server <host> <port> <threads> <file_root_root>
+**[run]** file_server <host> <port> <threads> <file_root_root>
 
 example: 
 > file_server 0.0.0.0 80 4 /usr/files/server
 
 
-**shut**: 
+**[shut]**: 
 >x
 
 
 ## Client usage example
 
-run: file_client <host> <port> <file_root_root>
+**[run]** file_client <host> <port> <file_root_root>
 
-**example**: 
+example: 
 > file_client 192.168.0.1 80 /usr/files/client
 
 
@@ -25,7 +25,7 @@ run: file_client <host> <port> <file_root_root>
 >x
 
 
-**get: get -{scope:a|s} {file_name}**
+**[get]** get -{scope:a|s} {file_name}
 
 example: 
 >get -a
@@ -35,7 +35,7 @@ or
 
 
 
-**post: post -{scope:a|s} {file_name}**
+**[post]** post -{scope:a|s} {file_name}
 
 example:
 >post -a
@@ -59,7 +59,7 @@ or
 
 JSON messages have defined to indicate requests and results of files transfer
 
-* get file request: from client to server
+* Get file request message (from client to server)
    * uuid: unique message id, used to trace response
    * method: "get"
    * scope: "single" = single file; "all" = all valid files
@@ -79,7 +79,8 @@ Examples
 }
 ```
 
-* post file request: from client to server, or verse
+
+* Post file request message (from client to server, or verse)
    * uuid: unique message id, used to trace response
    * method: "get"
    * target: file name, e.g. get_request_target.txt
@@ -94,7 +95,8 @@ Examples
 }
 ```
 
-* response: from server to client
+
+* Response (from server to client)
    * uuid: unique message id, used to trace request
    * response: "accepted" or "rejected"
    * reason: interpretation of response (optional) 
