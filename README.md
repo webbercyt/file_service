@@ -74,7 +74,7 @@ Please see details in [C4 diagrams](https://github.com/webbercyt/file_service/bl
 
 ## Messages
 
-JSON messages have been defined to indicate requests and results
+JSON messages have been defined to indicate requests and responses
 
 * Get file request message (from client to server)
    * uuid: unique message id, used to trace response
