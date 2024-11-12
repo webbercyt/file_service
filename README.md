@@ -46,13 +46,13 @@ or
 
 ## Development setup
 
-1. dependencies
+1. Dependencies
 
-   minimum dependencies are under ./third_party
+   minimum dependencies are stored under ./third_party, no more dependency setup is required.
 
-2. build
+2. Build
 
-   build file_server and file_client seperately
+   cmake build file_server and file_client seperately
 
 
 ## Messages
