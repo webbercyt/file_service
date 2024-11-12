@@ -1,5 +1,5 @@
 # Server-Client File Exchange 
-> Server-client implementation of [RFC 6455](https://www.rfc-editor.org/rfc/rfc6455) websocket protocal to file exchange 
+> Server-client implementation of [RFC 6455 websocket protocol](https://www.rfc-editor.org/rfc/rfc6455) to file exchange 
 
 A uint64_t flag, [max_clients](https://github.com/webbercyt/file_service/blob/master/utils/resource.h), controls the number of allowed workers/clients to server.
 
