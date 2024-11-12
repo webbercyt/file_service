@@ -1,6 +1,8 @@
 # Server-Client File Exchanger 
 > Websocket server-client implementation for file exchange 
 
+A uint64_t flag, [max_clients](https://github.com/webbercyt/file_service/blob/master/utils/resource.h), controls the number of allowed workers/clients to server.
+
 ![](infrastructure.png)
 
 Please see details in [C4 diagrams](https://github.com/webbercyt/file_service/blob/master/diagrams.pdf).
