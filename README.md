@@ -1,6 +1,8 @@
 # Server-Client File Exchanger 
 > Server-Client mode implementation to exchange files via websocket
 
+![](infrastructure.drawio.png)
+
 ## Server usage example
 
 **[run]** file_server <host> <port> <threads> <file_root_root>
