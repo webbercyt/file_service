@@ -5,6 +5,18 @@
 
 Please see details in [C4 diagrams](https://github.com/webbercyt/file_service/blob/master/diagrams.pdf).
 
+
+## Development setup
+
+1. Dependencies
+
+   minimum dependencies are stored under ./third_party, no more dependency setup is required.
+
+2. Build
+
+   cmake build file_server and file_client seperately
+
+
 ## Server usage example
 
 **[run]** file_server <host> <port> <threads> <file_root_root>
@@ -46,17 +58,6 @@ example:
 
 or
 >post -s client-server.png
-
-
-## Development setup
-
-1. Dependencies
-
-   minimum dependencies are stored under ./third_party, no more dependency setup is required.
-
-2. Build
-
-   cmake build file_server and file_client seperately
 
 
 ## Messages
