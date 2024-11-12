@@ -1,34 +1,27 @@
 # Server-Client File Exchanger 
 > Server-Client mode implementation to exchange files via websocket
 
-## Usage example
+## Server usage example
 
-[Server] - response request from clients
+run: > file_server <host> <port> <threads> <file_root_root>
 
-run: 
-> file_server <host> <port> <threads> <file_root_root>
-run example:
-> file_server 0.0.0.0 80 4 /usr/files/server
+example: > file_server 0.0.0.0 80 4 /usr/files/server
 
-shut:
->x
 
-[Client] - get/post file(s) via command lines.
+shut: >x
 
-run:
-> file_client <host> <port> <file_root_root>
-example:
-> file_client 192.168.0.1 80 /usr/files/client
 
-shut:
->x
+##Client usage example - get/post file(s) via command lines.
 
-get:
->get -{scope:a|s} {file_name}
-get all example:
->get -a
-get single example:
->get -s server-client.png
+run: > file_client <host> <port> <file_root_root>
+
+example: > file_client 192.168.0.1 80 /usr/files/client
+
+shut: >x
+
+get: >get -{scope:a|s} {file_name}
+get all example: >get -a
+get single example: >get -s server-client.png
 
 post:
 >post -{scope:a|s} {file_name}
