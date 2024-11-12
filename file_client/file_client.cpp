@@ -1,7 +1,7 @@
 // file_client.cpp : This file contains the 'main' function. Program execution begins and ends there.
 //
 
-#include "websocket_session.h"
+#include "session.h"
 #include "command_handler.h"
 #include "binary_file_manager.h"
 #include <thread>
@@ -12,10 +12,10 @@ int main(int argc, char** argv)
     if (argc != 4)
     {
         std::cerr <<
-            "Usage: file-client <host> <port> <file_root_root>\n" <<
+            "Usage: file_client <host> <port> <file_root_root>\n" <<
             "Example:\n" <<
-            "    file-client 0.0.0.1 80 /usr/file\n" <<
-            "    file-client 127.0.0.1 8080 c:/source/files\n";
+            "    file_client 0.0.0.1 80 /usr/file\n" <<
+            "    file_client 127.0.0.1 8080 c:/source/files\n";
         return EXIT_FAILURE;
     }
 
@@ -27,7 +27,7 @@ int main(int argc, char** argv)
 
     // The io_context is required for all I/O
     net::io_context ioc;
-    auto session_ = std::make_shared<websocket_session>(ioc);
+    auto session_ = std::make_shared<session>(ioc);
 
     //start command handler
     std::thread command(

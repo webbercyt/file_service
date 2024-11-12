@@ -19,11 +19,11 @@ using tcp = boost::asio::ip::tcp;
 class binary_file_manager;
 
 // Sends a WebSocket message and prints the response
-class websocket_session : public std::enable_shared_from_this<websocket_session>
+class session : public std::enable_shared_from_this<session>
 {
 public:
     // Resolver and socket require an io_context
-    explicit websocket_session(net::io_context& ioc);
+    explicit session(net::io_context& ioc);
 
     // Start the asynchronous operation
     void run(

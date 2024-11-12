@@ -1,5 +1,5 @@
 #include "command_handler.h"
-#include "websocket_session.h"
+#include "session.h"
 #include "binary_file_manager.h"
 #include "logger.h"
 #include "messages.h"
@@ -21,7 +21,7 @@ const std::map<std::string, std::string, std::less<>> scope_map_ = {
     {file_single,   "single"} };
 
 command_handler::command_handler(
-    std::shared_ptr<websocket_session> session, 
+    std::shared_ptr<session> session, 
     std::shared_ptr<binary_file_manager> file_manager) :
         session_(session), file_manager_(file_manager)
 {

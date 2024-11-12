@@ -1,16 +1,16 @@
-#include "websocket_session.h"
+#include "session.h"
 #include "binary_file_manager.h"
 #include "logger.h"
 #include "messages.h"
 #include <cassert>
 
-websocket_session::websocket_session(net::io_context& ioc)
+session::session(net::io_context& ioc)
     : resolver_(net::make_strand(ioc))
     , ws_(net::make_strand(ioc))
 {
 }
 
-void websocket_session::run(char const* host, char const* port, std::shared_ptr<binary_file_manager> file_manager)
+void session::run(char const* host, char const* port, std::shared_ptr<binary_file_manager> file_manager)
 {
     assert(file_manager && "File manager must not be null");
     file_manager_ = file_manager;
@@ -24,11 +24,11 @@ void websocket_session::run(char const* host, char const* port, std::shared_ptr<
         host,
         port,
         beast::bind_front_handler(
-            &websocket_session::on_resolve,
+            &session::on_resolve,
             shared_from_this()));
 }
 
-void websocket_session::send(const std::string& s)
+void session::send(const std::string& s)
 {
     const std::string context_prefix = (const char[12])"\"context\":\"";
 
@@ -41,12 +41,12 @@ void websocket_session::send(const std::string& s)
     net::post(
         ws_.get_executor(),
         beast::bind_front_handler(
-            &websocket_session::on_send,
+            &session::on_send,
             shared_from_this(),
             s));
 }
 
-void websocket_session::reconnect()
+void session::reconnect()
 {
     logger::info("reconnecting ...");
 
@@ -56,11 +56,11 @@ void websocket_session::reconnect()
         host_,
         port_,
         beast::bind_front_handler(
-            &websocket_session::on_resolve,
+            &session::on_resolve,
             shared_from_this()));
 }
 
-void websocket_session::on_resolve(beast::error_code ec, tcp::resolver::results_type results)
+void session::on_resolve(beast::error_code ec, tcp::resolver::results_type results)
 {
     if (ec)
         return logger::fail(ec, "resolve");
@@ -72,11 +72,11 @@ void websocket_session::on_resolve(beast::error_code ec, tcp::resolver::results_
     beast::get_lowest_layer(ws_).async_connect(
         results,
         beast::bind_front_handler(
-            &websocket_session::on_connect,
+            &session::on_connect,
             shared_from_this()));
 }
 
-void websocket_session::on_connect(beast::error_code ec, tcp::resolver::results_type::endpoint_type ep)
+void session::on_connect(beast::error_code ec, tcp::resolver::results_type::endpoint_type ep)
 {
     if (ec)
     {
@@ -111,11 +111,11 @@ void websocket_session::on_connect(beast::error_code ec, tcp::resolver::results_
     // Perform the websocket handshake
     ws_.async_handshake(host, "/",
         beast::bind_front_handler(
-            &websocket_session::on_handshake,
+            &session::on_handshake,
             shared_from_this()));
 }
 
-void websocket_session::on_handshake(beast::error_code ec)
+void session::on_handshake(beast::error_code ec)
 {
     if (ec)
         return logger::fail(ec, "handshake");
@@ -126,16 +126,16 @@ void websocket_session::on_handshake(beast::error_code ec)
     read();
 }
 
-void websocket_session::read()
+void session::read()
 {
     ws_.async_read(
         buffer_,
         beast::bind_front_handler(
-            &websocket_session::on_read,
+            &session::on_read,
             shared_from_this()));
 }
 
-void websocket_session::on_read(beast::error_code ec, std::size_t bytes_transferred)
+void session::on_read(beast::error_code ec, std::size_t bytes_transferred)
 {
     boost::ignore_unused(bytes_transferred);
 
@@ -149,7 +149,7 @@ void websocket_session::on_read(beast::error_code ec, std::size_t bytes_transfer
     read();
 }
 
-void websocket_session::on_send(const std::string& s)
+void session::on_send(const std::string& s)
 {
     // Always add to queue
     queue_.push(s);
@@ -162,11 +162,11 @@ void websocket_session::on_send(const std::string& s)
     ws_.async_write(
         net::buffer(queue_.front()),
         beast::bind_front_handler(
-            &websocket_session::on_write,
+            &session::on_write,
             shared_from_this()));
 }
 
-void websocket_session::on_write(beast::error_code ec, std::size_t)
+void session::on_write(beast::error_code ec, std::size_t)
 {
     // Handle the error, if any
     if (ec)
@@ -180,11 +180,11 @@ void websocket_session::on_write(beast::error_code ec, std::size_t)
         ws_.async_write(
             net::buffer(queue_.front()),
             beast::bind_front_handler(
-                &websocket_session::on_write,
+                &session::on_write,
                 shared_from_this()));
 }
 
-void websocket_session::consume_read_buffer()
+void session::consume_read_buffer()
 {
     auto data = beast::buffers_to_string(buffer_.data());
     buffer_.consume(buffer_.size());
@@ -209,15 +209,15 @@ void websocket_session::consume_read_buffer()
     }
 }
 
-void websocket_session::close()
+void session::close()
 {
     ws_.async_close(websocket::close_code::normal,
         beast::bind_front_handler(
-            &websocket_session::on_close,
+            &session::on_close,
             shared_from_this()));
 }
 
-void websocket_session::on_close(beast::error_code ec)
+void session::on_close(beast::error_code ec)
 {
     if (ec)
         return logger::fail(ec, "close");

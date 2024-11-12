@@ -9,7 +9,10 @@ public:
 	~binary_file_manager() = default;
 
 	bool read(std::string_view file_name, std::string& context) const;
+	bool read(std::string_view file_name, std::string& context, std::string& error) const;
 	bool write(std::string_view file_name, std::string_view context) const;
+	bool write(std::string_view file_name, std::string_view context, std::string& error) const;
+
 	std::list<std::string> get_file_list() const;
 	
 private:

@@ -143,6 +143,7 @@
   <ItemGroup>
     <ClInclude Include="..\utils\binary_file_manager.h" />
     <ClInclude Include="..\utils\logger.h" />
+    <ClInclude Include="..\utils\messages.h" />
     <ClInclude Include="listener.h" />
     <ClInclude Include="session.h" />
   </ItemGroup>

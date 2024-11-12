@@ -3,7 +3,7 @@
 #include <string>
 #include <atomic>
 
-class websocket_session;
+class session;
 class binary_file_manager;
 
 /*
@@ -25,7 +25,7 @@ class command_handler
 {
 public:
 	explicit command_handler(
-		std::shared_ptr<websocket_session> session,
+		std::shared_ptr<session> session,
 		std::shared_ptr<binary_file_manager> binary_file_manager);
 	~command_handler() = default;
 
@@ -40,7 +40,7 @@ private:
 
 	std::string get_file_name(std::string_view param) const;
 
-	std::shared_ptr<websocket_session> session_;
+	std::shared_ptr<session> session_;
 	std::shared_ptr<binary_file_manager> file_manager_;
 	std::atomic_bool stop_ = false;
 };

@@ -4,6 +4,7 @@
 #include <boost/beast/websocket.hpp>
 #include <boost/asio/dispatch.hpp>
 #include <boost/asio/strand.hpp>
+#include <boost/json.hpp>
 #include <algorithm>
 #include <cstdlib>
 #include <functional>
@@ -13,7 +14,7 @@
 #include <thread>
 #include <vector>
 #include <queue>
-#include <boost/json.hpp>
+#include <mutex>
 
 namespace beast = boost::beast;         // from <boost/beast.hpp>
 namespace http = beast::http;           // from <boost/beast/http.hpp>
@@ -21,19 +22,13 @@ namespace websocket = beast::websocket; // from <boost/beast/websocket.hpp>
 namespace net = boost::asio;            // from <boost/asio.hpp>
 using tcp = boost::asio::ip::tcp;       // from <boost/asio/ip/tcp.hpp>
 
-//// Report a failure
-//static void
-//fail(beast::error_code ec, char const* what)
-//{
-//    std::cerr << what << ": " << ec.message() << "\n";
-//}
-
 // Echoes back all received WebSocket messages
 class session : public std::enable_shared_from_this<session>
 {
 public:
     // Take ownership of the socket
     explicit session(tcp::socket&& socket);
+    ~session();
 
     // Get on the correct executor
     void run();
@@ -63,4 +58,7 @@ private:
     websocket::stream<beast::tcp_stream> ws_;
     beast::flat_buffer buffer_;
     std::queue<std::string> queue_;
+
+    static uint64_t clients_;
+    static std::mutex clients_mutex_;
 };

@@ -140,14 +140,14 @@
     <ClCompile Include="..\utils\binary_file_manager.cpp" />
     <ClCompile Include="command_handler.cpp" />
     <ClCompile Include="file_client.cpp" />
-    <ClCompile Include="websocket_session.cpp" />
+    <ClCompile Include="session.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\utils\binary_file_manager.h" />
     <ClInclude Include="..\utils\logger.h" />
     <ClInclude Include="..\utils\messages.h" />
     <ClInclude Include="command_handler.h" />
-    <ClInclude Include="websocket_session.h" />
+    <ClInclude Include="session.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

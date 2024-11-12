@@ -1,14 +1,27 @@
 #include "session.h"
 #include "logger.h"
+#include "messages.h"
+
+uint64_t session::clients_ = 0;
+std::mutex session::clients_mutex_;
 
 session::session(tcp::socket&& socket)
     : ws_(std::move(socket))
 {
+    std::scoped_lock<std::mutex>lock(clients_mutex_);
+    clients_++;
+    logger::info("connected client(s): " + std::to_string(clients_));
+}
+
+session::~session()
+{
+    std::scoped_lock<std::mutex>lock(clients_mutex_);
+    clients_--;
+    logger::info("connected client(s): " + std::to_string(clients_));
 }
 
 // Get on the correct executor
-void
-session::run()
+void session::run()
 {
     // We need to be executing within a strand to perform async operations
     // on the I/O objects in this session. Although not strictly necessary
@@ -21,8 +34,7 @@ session::run()
 }
 
 // Start the asynchronous operation
-void
-session::on_run()
+void session::on_run()
 {
     // Set suggested timeout settings for the websocket
     ws_.set_option(
@@ -44,8 +56,7 @@ session::on_run()
             shared_from_this()));
 }
 
-void
-session::on_accept(beast::error_code ec)
+void session::on_accept(beast::error_code ec)
 {
     if (ec)
         return logger::fail(ec, "accept");
@@ -137,40 +148,72 @@ void session::on_send(const std::string& s)
 
 void session::consume_buffer()
 {
-    //server only processes "get" and "post"
     auto data = beast::buffers_to_string(buffer_.data());
     buffer_.consume(buffer_.size());
 
-    try
+    //server only processes "get" and "post"
+    switch (
+        auto msg = json_message_base::parse(data);
+    msg->type_)
     {
-        auto obj = boost::json::parse(data).as_object();
-        
-        boost::json::object response;
-        if (obj.find("uuid") != obj.end())
-        {
-            response["uuid"] = obj["uuid"];
-            response["response"] = "accepted";
-            send(boost::json::serialize(response));
-        }
-        
-        if (obj.find("method") != obj.end() &&
-            obj["method"] == "post" &&
-            obj.find("target") != obj.end() &&
-            obj.find("context") != obj.end())
-        {
-            /*file_manager_->write(
-                boost::json::value_to<std::string>(obj["target"]),
-                boost::json::value_to<std::string>(obj["context"]));*/
-
-            obj["target"] = "server_response.txt";
-            send(boost::json::serialize(obj));
-            return;
-        }
-    }
-    catch (const boost::system::system_error& e)
+    case message_type::e_mt_get:
     {
-        std::cerr << e.what() << std::endl;
+        //logger::info("received: " + data);
+        
+        //send response
+        response_message rsp_msg;
+        rsp_msg.uuid_ = msg->uuid_;
+        rsp_msg.response_ = response_type::e_rt_accepted;
+        send(rsp_msg.serialize());
+        break;
+    }
+    case message_type::e_mt_post:
+    {
+        /*if (auto post_msg = std::dynamic_pointer_cast<post_message>(msg))
+                file_manager_->write(
+                    post_msg->target_,
+                    post_msg->context_);*/
+
+        //send response
+        response_message rsp_msg;
+        rsp_msg.uuid_ = msg->uuid_;
+        rsp_msg.response_ = response_type::e_rt_accepted;
+        send(rsp_msg.serialize());
+        break;
+    }
+    default:
+        logger::error("unrecognized message: " + data);
+        break;
     }
 
-    logger::info("unrecognized message: " + data);
+    //try
+    //{
+    //    auto obj = boost::json::parse(data).as_object();
+    //    
+    //    boost::json::object response;
+    //    if (obj.find("uuid") != obj.end())
+    //    {
+    //        response["uuid"] = obj["uuid"];
+    //        response["response"] = "accepted";
+    //        send(boost::json::serialize(response));
+    //    }
+    //    
+    //    if (obj.find("method") != obj.end() &&
+    //        obj["method"] == "post" &&
+    //        obj.find("target") != obj.end() &&
+    //        obj.find("context") != obj.end())
+    //    {
+    //        /*file_manager_->write(
+    //            boost::json::value_to<std::string>(obj["target"]),
+    //            boost::json::value_to<std::string>(obj["context"]));*/
+
+    //        obj["target"] = "server_response.txt";
+    //        send(boost::json::serialize(obj));
+    //        return;
+    //    }
+    //}
+    //catch (const boost::system::system_error& e)
+    //{
+    //    std::cerr << e.what() << std::endl;
+    //}
 }
