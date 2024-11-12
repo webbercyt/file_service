@@ -1,5 +1,5 @@
 # Server-Client File Exchanger 
-> Server-Client mode implementation to exchange files via websocket
+> Websocket server-client implementation for file exchange 
 
 ![](infrastructure.png)
 
