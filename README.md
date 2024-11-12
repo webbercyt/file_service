@@ -1,5 +1,5 @@
-# Server-Client File Exchanger 
-> Websocket server-client implementation for file exchange 
+# Server-Client File Exchange 
+> Server-client implementation of [RFC 6455 websocket protocol](https://www.rfc-editor.org/rfc/rfc6455) to file exchange 
 
 A uint64_t flag, [max_clients](https://github.com/webbercyt/file_service/blob/master/utils/resource.h), controls the number of allowed workers/clients to server.
 
@@ -74,7 +74,7 @@ Please see details in [C4 diagrams](https://github.com/webbercyt/file_service/bl
 
 ## Messages
 
-JSON messages have been defined to indicate requests and results
+JSON messages have been defined to indicate requests and responses
 
 * Get file request message (from client to server)
    * uuid: unique message id, used to trace response
@@ -103,7 +103,7 @@ JSON messages have been defined to indicate requests and results
    * uuid: unique message id, used to trace response
    * method: "get"
    * target: file name, e.g. get_request_target.txt
-   * context: binary context of file
+   * context: binary encoded context of file
 	```
 	Examples
 	{
@@ -118,7 +118,7 @@ JSON messages have been defined to indicate requests and results
 * Response (from server to client)
    * uuid: unique message id, used to trace request
    * response: "accepted" or "rejected"
-   * reason: interpretation of response (optional) 
+   * reason (optional): interpretation of response 
 	```
 	Examples
 	{
@@ -127,3 +127,10 @@ JSON messages have been defined to indicate requests and results
 		"reason":"failed to parse message"
 	}
 	```
+
+
+## Todo 
+
+* Handle errors in UTF-8 encoded data
+
+Based on RFC 6455, when an endpoint is to interpret a byte stream as UTF-8 (e.g. file name) but finds that the byte stream is not, in fact, a valid UTF-8 stream, that endpoint fails the webSocket connection. What shall be further done is to handle non-UTF-8 stream properly. 
