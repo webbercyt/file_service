@@ -47,7 +47,7 @@ void command_handler::stop()
 
 void command_handler::handle(const std::string& command)
 {
-    if (command == text::exit)
+    if (command == text::x)
     {
         session_->close();
         stop_ = true;

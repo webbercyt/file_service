@@ -34,22 +34,42 @@ bool binary_file_manager::read(std::string_view file_name, std::string& context,
 
 	try
 	{
-		if (std::ifstream file(path, std::ios::binary); file)
+		if (!std::filesystem::exists(path))
 		{
-			std::ostringstream oss;
-			oss << file.rdbuf();
-			file.close();
-
-			std::string data = oss.str();
-			std::string encoded_context;
-			boost::algorithm::hex(data.begin(), data.end(), std::back_inserter(encoded_context));
-
-			context = encoded_context;
-			return true;
+			error = text::fail_get_file_context;
+			logger::error(error);
+			return false;
 		}
 
-		error = text::fail_get_file_context;
-		logger::error(error);
+		if (std::uintmax_t file_size = std::filesystem::file_size(path); 
+			file_size > ctrl::max_file_size_in_byte)
+		{ 
+			error = 
+				text::file_over_max_size_limit 
+				+ std::to_string(ctrl::max_file_size_in_mb) 
+				+ " mb";
+			logger::error(error);
+			return false;
+		}
+
+		std::ifstream file(path, std::ios::binary);
+		if (!file)
+		{
+			error = text::fail_get_file_context;
+			logger::error(error);
+			return false;
+		}
+		
+		std::ostringstream oss;
+		oss << file.rdbuf();
+		file.close();
+
+		std::string data = oss.str();
+		std::string encoded_context;
+		boost::algorithm::hex(data.begin(), data.end(), std::back_inserter(encoded_context));
+
+		context = encoded_context;
+		return true;
 	}
 	catch (const std::filesystem::filesystem_error& e)
 	{
