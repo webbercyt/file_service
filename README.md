@@ -3,12 +3,13 @@
 
 ## Server usage example
 
-run: file_server <host> <port> <threads> <file_root_root>
+**run**: file_server <host> <port> <threads> <file_root_root>
+
 example: 
 > file_server 0.0.0.0 80 4 /usr/files/server
 
 
-shut: 
+**shut**: 
 >x
 
 
@@ -16,28 +17,30 @@ shut:
 
 run: file_client <host> <port> <file_root_root>
 
-example: > file_client 192.168.0.1 80 /usr/files/client
+**example**: 
+> file_client 192.168.0.1 80 /usr/files/client
 
-shut: 
+
+**shut**: 
 >x
 
 
 **get: get -{scope:a|s} {file_name}**
 
-get all example: 
+example: 
 >get -a
 
-get single example: 
+or
 >get -s server-client.png
 
 
 
 **post: post -{scope:a|s} {file_name}**
 
-post all example:
+example:
 >post -a
 
-post single example:
+or
 >post -s client-server.png
 
 
