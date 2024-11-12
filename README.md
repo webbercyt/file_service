@@ -3,32 +3,34 @@
 
 ## Server usage example
 
-run: > file_server <host> <port> <threads> <file_root_root>
-
-example: > file_server 0.0.0.0 80 4 /usr/files/server
+run: file_server <host> <port> <threads> <file_root_root>
+example: 
+> file_server 0.0.0.0 80 4 /usr/files/server
 
 
 shut: >x
 
 
-##Client usage example - get/post file(s) via command lines.
+## Client usage example - get/post file(s) via command lines.
 
-run: > file_client <host> <port> <file_root_root>
-
+run: file_client <host> <port> <file_root_root>
 example: > file_client 192.168.0.1 80 /usr/files/client
 
 shut: >x
 
-get: >get -{scope:a|s} {file_name}
-get all example: >get -a
-get single example: >get -s server-client.png
-
-post:
->post -{scope:a|s} {file_name}
-post all example:
+get: get -{scope:a|s} {file_name}
+get all example: 
 >get -a
+
+get single example: 
+>get -s server-client.png
+
+post: post -{scope:a|s} {file_name}
+post all example:
+>post -a
+
 post single example:
->get -s client-server.png
+>post -s client-server.png
 
 
 
