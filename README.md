@@ -61,7 +61,7 @@ or
 
 ## Messages
 
-JSON messages have defined to indicate requests and results of files transfer
+JSON messages have been defined to indicate requests and results
 
 * Get file request message (from client to server)
    * uuid: unique message id, used to trace response
