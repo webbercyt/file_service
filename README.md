@@ -25,24 +25,24 @@ Please see details in [C4 diagrams](https://github.com/webbercyt/file_service/bl
 
 * To start the server, run the command: file_server <host> <port> <threads> <file_root_root>
 
-example: 
-> file_server 0.0.0.0 80 4 /usr/files/server
-
-
-* To shut down the server, use the 'x' command
->x
+	example: 
+	> file_server 0.0.0.0 80 4 /usr/files/server
+	
+	
+	* To shut down the server, use the 'x' command
+	>x
 
 
 ## Client usage example
 
 * To start the client, run the command: file_client <host> <port> <file_root_root>
 
-example: 
-> file_client 192.168.0.1 80 /usr/files/client
-
-
-To shut down the client, use the 'x' command
->x
+	example: 
+	> file_client 192.168.0.1 80 /usr/files/client
+	
+	
+	To shut down the client, use the 'x' command
+	>x
 
 
 * To retrive file(s) from server, use the 'get' command: get -{scope:a|s} {file_name} 
@@ -51,11 +51,11 @@ To shut down the client, use the 'x' command
    
    {scope} = -s : get singel file
 
-examples: 
->get -a
-
-or
->get -s server-client.png
+	examples: 
+	>get -a
+	
+	or
+	>get -s server-client.png
 
 
 * To send file(s) to server, run 'post' command: post -{scope:a|s} {file_name}
@@ -65,11 +65,11 @@ or
    
    {scope} = -s : get singel file
    
-examples:
->post -a
-
-or
->post -s client-server.png
+	examples:
+	>post -a
+	
+	or
+	>post -s client-server.png
 
 
 ## Messages
@@ -81,20 +81,22 @@ JSON messages have been defined to indicate requests and results
    * method: "get"
    * scope: "single" = single file; "all" = all valid files
    * target: file name, e.g. get_request_target.txt
- ```
-Examples
-{
-	"uuid":"fd6b4eac-e386-4377-b4a5-0ec2cd182490"
-	"method":"get"
-	"scope":"all"
-}
-{
-	"uuid":"fd6b4eac-e386-4377-b4a5-0ec2cd182490"
-	"method":"get"
-	"scope":"single"
-	"target":"get_request_target.txt"
-}
-```
+ 	```
+	Examples
+	
+	{
+		"uuid":"fd6b4eac-e386-4377-b4a5-0ec2cd182490"
+		"method":"get"
+		"scope":"all"
+	}
+	
+	{
+		"uuid":"fd6b4eac-e386-4377-b4a5-0ec2cd182490"
+		"method":"get"
+		"scope":"single"
+		"target":"get_request_target.txt"
+	}
+	```
 
 
 * Post file request message (from client to server, or verse)
@@ -102,26 +104,26 @@ Examples
    * method: "get"
    * target: file name, e.g. get_request_target.txt
    * context: binary context of file
-```
-Examples
-{
-	"uuid":"fd6b4eac-e386-4377-b4a5-0ec2cd182490"
-	"method":"post"
-	"target":"post_request_target.txt"
-	"context":"FFFFCAE051AE9"
-}
-```
+	```
+	Examples
+	{
+		"uuid":"fd6b4eac-e386-4377-b4a5-0ec2cd182490"
+		"method":"post"
+		"target":"post_request_target.txt"
+		"context":"FFFFCAE051AE9"
+	}
+	```
 
 
 * Response (from server to client)
    * uuid: unique message id, used to trace request
    * response: "accepted" or "rejected"
    * reason: interpretation of response (optional) 
-```
-Examples
-{
-	"uuid":"fd6b4eac-e386-4377-b4a5-0ec2cd182490"
-	"response":"rejected"
-	"reason":"failed to parse message"
-}
-```
+	```
+	Examples
+	{
+		"uuid":"fd6b4eac-e386-4377-b4a5-0ec2cd182490"
+		"response":"rejected"
+		"reason":"failed to parse message"
+	}
+	```
