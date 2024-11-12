@@ -4,7 +4,7 @@
 namespace text
 {
 	//infomation
-	static const std::string connected_clients				= "connected client(s): ";
+	static const std::string active_clients					= "active client(s): ";
 	static const std::string connect_closed					= "connnection closed";
 	static const std::string connect_succeed				= "succeeded to connect ";
 	static const std::string reconnecting					= "reconnecting ...";
@@ -23,6 +23,7 @@ namespace text
 	static const std::string unrecognized_command		= "unrecognized command";
 	static const std::string unrecognized_message		= "unrecognized message: ";
 	static const std::string unsupported_scope			= "unsupported scope";
+	static const std::string reach_max_support_client	= "reached max supported clients, reject to accept new client.";
 	
 	//others
 	static const std::string accept		= "accept";
@@ -41,4 +42,9 @@ namespace text
 	static const std::string sent		= "sent: ";
 	static const std::string set_option = "set_option";
 	static const std::string write		= "write";
+}
+
+namespace ctrl
+{
+	static const uint64_t max_clients = 2048;
 }

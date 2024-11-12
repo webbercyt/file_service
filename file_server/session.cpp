@@ -14,14 +14,22 @@ session::session(tcp::socket&& socket, std::shared_ptr<binary_file_manager> file
     assert(file_manager && text::file_manager_must_not_null.c_str());
     std::scoped_lock<std::mutex>lock(clients_mutex_);
     clients_++;
-    logger::info(text::connected_clients + std::to_string(clients_));
+    logger::info(
+        text::active_clients 
+        + std::to_string(clients_) 
+        + "/" 
+        + std::to_string(ctrl::max_clients));
 }
 
 session::~session()
 {
     std::scoped_lock<std::mutex>lock(clients_mutex_);
     clients_--;
-    logger::info(text::connected_clients + std::to_string(clients_));
+    logger::info(
+        text::active_clients
+        + std::to_string(clients_)
+        + "/"
+        + std::to_string(ctrl::max_clients));
 }
 
 // Get on the correct executor
@@ -273,4 +281,10 @@ void session::process_post_message(std::shared_ptr<json_message_base> msg)
     if (!reason.empty())
         rsp_msg.reason_ = reason;
     send(rsp_msg.serialize());
+}
+
+uint64_t session::clients()
+{
+    std::scoped_lock<std::mutex>lock(clients_mutex_);
+    return clients_;
 }

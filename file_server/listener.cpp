@@ -72,6 +72,12 @@ void listener::on_accept(beast::error_code ec, tcp::socket socket)
     else
     {
         // Create the session and run it
+        if (session::clients() + 1 > ctrl::max_clients)
+        {
+            logger::info(text::reach_max_support_client);
+            return;
+        }
+
         std::make_shared<session>(std::move(socket), file_manager_)->run();
     }
 
