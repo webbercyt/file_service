@@ -23,7 +23,7 @@ Please see details in [C4 diagrams](https://github.com/webbercyt/file_service/bl
 
 ## Server usage example
 
-* To start the server, run the command: file_server {host} {port} {threads} {file_root_path}
+* To start the server, run the command: _file_server {host} {port} {threads} {file_root_path}_
 
 	example: 
 	> file_server 0.0.0.0 80 4 /usr/files/server
@@ -35,7 +35,7 @@ Please see details in [C4 diagrams](https://github.com/webbercyt/file_service/bl
 
 ## Client usage example
 
-* To start the client, run the command: file_client {host} {port} {file_root_path}
+* To start the client, run the command: _file_client {host} {port} {file_root_path}_
 
 	example: 
 	> file_client 192.168.0.1 80 /usr/files/client
@@ -45,11 +45,11 @@ To shut down the client, use the 'x' command
 	>x
 
 
-* To retrive file(s) from server, use the 'get' command: get -{scope:a|s} {file_name} 
+* To retrive file(s) from server, use the 'get' command: _get -{scope=a|s} {file_name}_ 
 	
-   {scope} = -a : get all files
+   {scope} = a : get all files under server directory
    
-   {scope} = -s : get singel file
+   {scope} = s : get a singel file under server directory
 
 	examples: 
 	>get -a
@@ -58,12 +58,12 @@ To shut down the client, use the 'x' command
 	>get -s server-client.png
 
 
-* To send file(s) to server, run 'post' command: post -{scope:a|s} {file_name}
+* To send file(s) to server, run 'post' command: _post -{scope=a|s} {file_name}_
 
 	
-   {scope} = -a : get all files
+   {scope} = a : post all files under client directory
    
-   {scope} = -s : get singel file
+   {scope} = s : post a singel file under server directory
    
 	examples:
 	>post -a
