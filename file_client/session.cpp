@@ -1,7 +1,8 @@
 #include "session.h"
 #include "binary_file_manager.h"
-#include "logger.h"
 #include "messages.h"
+#include "resource.h"
+#include "logger.h"
 #include <cassert>
 
 session::session(net::io_context& ioc)
@@ -12,7 +13,7 @@ session::session(net::io_context& ioc)
 
 void session::run(char const* host, char const* port, std::shared_ptr<binary_file_manager> file_manager)
 {
-    assert(file_manager && "File manager must not be null");
+    assert(file_manager && text::file_manager_must_not_null);
     file_manager_ = file_manager;
 
     // Save these for later
@@ -35,8 +36,8 @@ void session::send(const std::string& s)
     //log message sent without context, as context could be long
     auto p = s.find(context_prefix);
     p == std::string::npos ?
-        logger::info("sent: " + s) :
-        logger::info("sent: " + s.substr(0, p + context_prefix.length() - 1) + "...}");
+        logger::info(text::sent + s) :
+        logger::info(text::sent + s.substr(0, p + context_prefix.length() - 1) + "...}");
 
     net::post(
         ws_.get_executor(),
@@ -48,7 +49,7 @@ void session::send(const std::string& s)
 
 void session::reconnect()
 {
-    logger::info("reconnecting ...");
+    logger::info(text::reconnecting);
 
     std::this_thread::sleep_for(std::chrono::seconds(10));
 
@@ -63,7 +64,7 @@ void session::reconnect()
 void session::on_resolve(beast::error_code ec, tcp::resolver::results_type results)
 {
     if (ec)
-        return logger::fail(ec, "resolve");
+        return logger::fail(ec, text::resolve.c_str());
 
     // Set the timeout for the operation
     beast::get_lowest_layer(ws_).expires_after(std::chrono::seconds(30));
@@ -80,7 +81,7 @@ void session::on_connect(beast::error_code ec, tcp::resolver::results_type::endp
 {
     if (ec)
     {
-        logger::fail(ec, "connect");
+        logger::fail(ec, text::connect.c_str());
         reconnect();
         return;
     }
@@ -118,9 +119,9 @@ void session::on_connect(beast::error_code ec, tcp::resolver::results_type::endp
 void session::on_handshake(beast::error_code ec)
 {
     if (ec)
-        return logger::fail(ec, "handshake");
+        return logger::fail(ec, text::handshake.c_str());
 
-    logger::info("succeeded to connect " + host_ + ":" + port_);
+    logger::info(text::connect_succeed + host_ + ":" + port_);
 
     // read a message into buffer
     read();
@@ -140,7 +141,7 @@ void session::on_read(beast::error_code ec, std::size_t bytes_transferred)
     boost::ignore_unused(bytes_transferred);
 
     if (ec)
-        return logger::fail(ec, "read");
+        return logger::fail(ec, text::read.c_str());
 
     //consume buffer
     consume_read_buffer();
@@ -170,7 +171,7 @@ void session::on_write(beast::error_code ec, std::size_t)
 {
     // Handle the error, if any
     if (ec)
-        return logger::fail(ec, "write");
+        return logger::fail(ec, text::write.c_str());
 
     // Remove the string from the queue
     queue_.pop();
@@ -195,7 +196,7 @@ void session::consume_read_buffer()
     msg->type_)
     {
     case message_type::e_mt_response:
-        logger::info("received: " + data);
+        logger::info(text::received + data);
         break;
     case message_type::e_mt_post:
         if (auto post_msg = std::dynamic_pointer_cast<post_message>(msg))
@@ -204,7 +205,7 @@ void session::consume_read_buffer()
                 post_msg->context_);
         break;
     default:
-        logger::error("unrecognized message: " + data);
+        logger::error(text::unrecognized_message + data);
         break;
     }
 }
@@ -220,7 +221,7 @@ void session::close()
 void session::on_close(beast::error_code ec)
 {
     if (ec)
-        return logger::fail(ec, "close");
+        return logger::fail(ec, text::close.c_str());
 
-    logger::info("connnection closed");
+    logger::info(text::connect_closed);
 }

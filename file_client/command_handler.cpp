@@ -1,8 +1,9 @@
 #include "command_handler.h"
 #include "session.h"
 #include "binary_file_manager.h"
-#include "logger.h"
 #include "messages.h"
+#include "resource.h"
+#include "logger.h"
 #include <boost/json.hpp>
 #include <iostream>
 #include <cassert>
@@ -25,8 +26,8 @@ command_handler::command_handler(
     std::shared_ptr<binary_file_manager> file_manager) :
         session_(session), file_manager_(file_manager)
 {
-    assert(session_ && "Websocket session must not be null");
-    assert(file_manager_ && "File manager must not be null");
+    assert(session_ && text::session_must_not_null.c_str());
+    assert(file_manager_ && text::file_manager_must_not_null.c_str());
 }
 
 void command_handler::run()
@@ -46,7 +47,7 @@ void command_handler::stop()
 
 void command_handler::handle(const std::string& command)
 {
-    if (command == "exit")
+    if (command == text::exit)
     {
         session_->close();
         stop_ = true;
@@ -56,24 +57,24 @@ void command_handler::handle(const std::string& command)
     auto space_pos = command.find_first_of(" ");
     if (space_pos == std::string::npos)
     {
-        logger::info("unrecognized command.");
+        logger::info(text::unrecognized_command);
         return;
     }
 
     auto method = command.substr(0, space_pos);
     auto param = command.substr(space_pos + 1, command.length() - space_pos - 1);
 
-    if (method == "get")
+    if (method == text::get)
     {
         process_get_command(param);
     }
-    else if (method == "post")
+    else if (method == text::post)
     {
         process_post_command(param);
     }
     else
     {
-        logger::info("unrecognized command.");
+        logger::info(text::unrecognized_command);
     }
 }
 
@@ -83,7 +84,7 @@ void command_handler::process_get_command(const std::string& param)
         param != file_all && 
         param.find(file_single) == std::string::npos)
     {
-        logger::info("unrecognized command.");
+        logger::info(text::unrecognized_command);
         return;
     }
 
@@ -116,7 +117,7 @@ void command_handler::process_post_command(const std::string& param)
     }
     else
     {
-        logger::info("unrecognized command.");
+        logger::info(text::unrecognized_command);
         return;
     }
 }

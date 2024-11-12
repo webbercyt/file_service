@@ -1,5 +1,6 @@
 #include "listener.h"
 #include "binary_file_manager.h"
+#include "resource.h"
 #include "logger.h"
 
 listener::listener(
@@ -16,7 +17,7 @@ listener::listener(
     acceptor_.open(endpoint.protocol(), ec);
     if (ec)
     {
-        logger::fail(ec, "open");
+        logger::fail(ec, text::open.c_str());
         return;
     }
 
@@ -24,7 +25,7 @@ listener::listener(
     acceptor_.set_option(net::socket_base::reuse_address(true), ec);
     if (ec)
     {
-        logger::fail(ec, "set_option");
+        logger::fail(ec, text::set_option.c_str());
         return;
     }
 
@@ -32,7 +33,7 @@ listener::listener(
     acceptor_.bind(endpoint, ec);
     if (ec)
     {
-        logger::fail(ec, "bind");
+        logger::fail(ec, text::bind.c_str());
         return;
     }
 
@@ -41,7 +42,7 @@ listener::listener(
         net::socket_base::max_listen_connections, ec);
     if (ec)
     {
-        logger::fail(ec, "listen");
+        logger::fail(ec, text::listen.c_str());
         return;
     }
 }
@@ -66,7 +67,7 @@ void listener::on_accept(beast::error_code ec, tcp::socket socket)
 {
     if (ec)
     {
-        logger::fail(ec, "accept");
+        logger::fail(ec, text::accept.c_str());
     }
     else
     {
