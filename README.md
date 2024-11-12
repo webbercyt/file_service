@@ -8,24 +8,30 @@ example:
 > file_server 0.0.0.0 80 4 /usr/files/server
 
 
-shut: >x
+shut: 
+>x
 
 
-## Client usage example - get/post file(s) via command lines.
+## Client usage example
 
 run: file_client <host> <port> <file_root_root>
+
 example: > file_client 192.168.0.1 80 /usr/files/client
 
-shut: >x
+shut: 
+>x
 
 get: get -{scope:a|s} {file_name}
+
 get all example: 
 >get -a
 
 get single example: 
 >get -s server-client.png
 
+
 post: post -{scope:a|s} {file_name}
+
 post all example:
 >post -a
 
@@ -33,23 +39,36 @@ post single example:
 >post -s client-server.png
 
 
-
-_For more examples and usage, please refer to the [Wiki][wiki]._
-
 ## Development setup
 
-Describe how to install all development dependencies and how to run an automated test-suite of some kind. Potentially do this for multiple platforms.
+1. dependencies
 
-```sh
-make install
-npm test
-```
+   minimum dependencies are under ./third_party
 
-## Release History
+2. build
 
-* 0.2.1
-    * CHANGE: Update docs (module code remains unchanged)
-* 0.2.0
+   build file_server and file_client seperately
+
+
+## Messages
+
+JSON messages have defined to indicate requests and results of files transfer
+
+* get file request: from client to server
+   * uuid[string]: unique message id, used to trace response
+   * method[string]: "get"
+   * scope[string]: "single" = single file; "all" = all valid files
+   * target[string]: file name, e.g. get_request_target.txt
+ ```
+{
+	"uuid":"fd6b4eac-e386-4377-b4a5-0ec2cd182490"
+	"method":"get"
+	"scope":"single"|"all"
+	"target":{file_name}
+}
+ ```
+
+* post file request: from client to server
     * CHANGE: Remove `setDefaultXYZ()`
     * ADD: Add `init()`
 * 0.1.1
