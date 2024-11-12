@@ -145,6 +145,7 @@
   <ItemGroup>
     <ClInclude Include="..\utils\binary_file_manager.h" />
     <ClInclude Include="..\utils\logger.h" />
+    <ClInclude Include="..\utils\messages.h" />
     <ClInclude Include="command_handler.h" />
     <ClInclude Include="websocket_session.h" />
   </ItemGroup>

@@ -1,7 +1,7 @@
 #include "websocket_session.h"
 #include "binary_file_manager.h"
 #include "logger.h"
-#include <boost/json.hpp>
+#include "messages.h"
 #include <cassert>
 
 websocket_session::websocket_session(net::io_context& ioc)
@@ -30,13 +30,13 @@ void websocket_session::run(char const* host, char const* port, std::shared_ptr<
 
 void websocket_session::send(const std::string& s)
 {
-    const std::string context_prefix = (const char[12])"\"context\"=\"";
+    const std::string context_prefix = (const char[12])"\"context\":\"";
 
-    //log message sent without context
+    //log message sent without context, as context could be long
     auto p = s.find(context_prefix);
     p == std::string::npos ?
         logger::info("sent: " + s) :
-        logger::info("sent: " + s.substr(0, p));
+        logger::info("sent: " + s.substr(0, p + context_prefix.length() - 1) + "...}");
 
     net::post(
         ws_.get_executor(),
@@ -186,36 +186,27 @@ void websocket_session::on_write(beast::error_code ec, std::size_t)
 
 void websocket_session::consume_read_buffer()
 {
-    //client only processes "response" and "post"
     auto data = beast::buffers_to_string(buffer_.data());
     buffer_.consume(buffer_.size());
 
-    try
+    //client only processes "response" and "post"
+    switch (
+        auto msg = json_message_base::parse(data);
+    msg->type_)
     {
-        auto obj = boost::json::parse(data).as_object();
-        if (obj.find("response") != obj.end())
-        {
-            std::cout << "received: " << data << std::endl;
-            return;
-        }
-
-        if (obj.find("method") != obj.end() &&
-            obj["method"] == "post" &&
-            obj.find("target") != obj.end() &&
-            obj.find("context") != obj.end())
-        {
+    case message_type::e_mt_response:
+        logger::info("received: " + data);
+        break;
+    case message_type::e_mt_post:
+        if (auto post_msg = std::dynamic_pointer_cast<post_message>(msg))
             file_manager_->write(
-                boost::json::value_to<std::string>(obj["target"]),
-                boost::json::value_to<std::string>(obj["context"]));
-            return;
-        }
+                post_msg->target_,
+                post_msg->context_);
+        break;
+    default:
+        logger::error("unrecognized message: " + data);
+        break;
     }
-    catch (const boost::system::system_error& e)
-    {
-        std::cerr << e.what() << std::endl;
-    }
-    
-    std::cout << "unrecognized message: " << data << std::endl;
 }
 
 void websocket_session::close()

@@ -1,4 +1,5 @@
 #include "binary_file_manager.h"
+#include "logger.h"
 #include <boost/algorithm/hex.hpp>
 #include <filesystem>
 #include <iostream>
@@ -13,6 +14,12 @@ binary_file_manager::binary_file_manager(const std::string& path)
 
 bool binary_file_manager::read(std::string_view file_name, std::string& context) const
 {
+	if (file_name.empty())
+	{
+		logger::error("cannot read file with empty name");
+		return false;
+	}
+
 	std::string path = root_path_;
 	path.append("/");
 	path.append(file_name);
@@ -31,12 +38,18 @@ bool binary_file_manager::read(std::string_view file_name, std::string& context)
 		return true;
 	}
 
-	std::cerr << "Failed to get file context. file is opened by other process or path is invalid." << std::endl;
+	logger::error("failed to get file context. file is opened by other process or path is invalid.");
 	return false;
 }
 
 bool binary_file_manager::write(std::string_view file_name, std::string_view context) const
 {
+	if (file_name.empty())
+	{
+		logger::error("cannot read file with empty name");
+		return false;
+	}
+
 	std::string path = root_path_;
 	path.append("/");
 	path.append(file_name);
@@ -44,7 +57,7 @@ bool binary_file_manager::write(std::string_view file_name, std::string_view con
 	std::ofstream out_file(path, std::ios::binary);
 	if (!out_file.is_open())
 	{
-		std::cerr << "Failed to open the file." << std::endl;
+		logger::error("failed to open the file.");
 		return false;
 	}
 
@@ -76,5 +89,5 @@ void binary_file_manager::create_root_folder() const
 		return;
 
 	if (!std::filesystem::create_directory(root_path_))
-		std::cerr << "failed to create directory: " << root_path_ << std::endl;
+		logger::error("failed to create directory: " + root_path_);
 }

@@ -2,10 +2,8 @@
 #include "websocket_session.h"
 #include "binary_file_manager.h"
 #include "logger.h"
+#include "messages.h"
 #include <boost/json.hpp>
-#include <boost/uuid/uuid.hpp> 
-#include <boost/uuid/uuid_generators.hpp> 
-#include <boost/uuid/uuid_io.hpp>
 #include <iostream>
 #include <cassert>
 #include <csignal>
@@ -21,11 +19,6 @@ const std::map<std::string, std::string, std::less<>> scope_map_ = {
     {file_list,     "list"}, 
     {file_all,      "all"}, 
     {file_single,   "single"} };
-
-std::string get_random_uuid()
-{
-    return boost::uuids::to_string(boost::uuids::random_generator()());
-}
 
 command_handler::command_handler(
     std::shared_ptr<websocket_session> session, 
@@ -94,20 +87,19 @@ void command_handler::process_get_command(const std::string& param)
         return;
     }
 
-    json::object obj;
-    obj["uuid"] = get_random_uuid();
-    obj["method"] = "get";
-
+    get_message msg;
     if (param.find(file_single) != std::string::npos)
     {
-        obj["scope"] = scope_map_.at(file_single);
-        obj["target"] = get_file_name(param);
+        msg.scope_ = get_scope::e_gs_single;
+        msg.target_ = get_file_name(param);
     }
-    else
+    else if(param == file_all)
     {
-        obj["scope"] = scope_map_.at(param);
+        msg.scope_ = get_scope::e_gs_all;
     }
 
+    json::object obj;
+    msg.to_json(obj);
     session_->send(json::serialize(obj));
 }
 
@@ -133,18 +125,17 @@ void command_handler::process_post_command(const std::string& param)
 
 void command_handler::send_post_command(const std::string& file_name)
 {
-    json::object obj;
-    obj["uuid"] = get_random_uuid();
-    obj["method"] = "post";
-
+    post_message msg;
     std::string context;
     if (!file_manager_->read(file_name, context))
     {
         return;
     }
-    obj["target"] = file_name;
-    obj["context"] = context;
+    msg.target_ = file_name;
+    msg.context_ = context;
 
+    json::object obj;
+    msg.to_json(obj);
     session_->send(json::serialize(obj));
 }
 
