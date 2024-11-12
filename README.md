@@ -14,9 +14,7 @@ Please see details in [C4 diagrams](https://github.com/webbercyt/file_service/bl
 
    c++17
 
-   boost 1.86.0
-
-   	the minimum dependencies of boost are stored in ./third_party, idealy there is no more dependency setup required.
+   boost 1.86.0 (minimum dependencies of boost are under ./third_party, idealy no more dependency setup required.)
 
 3. Build
 
