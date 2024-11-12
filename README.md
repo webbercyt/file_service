@@ -14,11 +14,11 @@ Please see details in [C4 diagrams](https://github.com/webbercyt/file_service/bl
 
    c++17
 
-   boost 1.86.0 (minimum dependencies of boost are under ./third_party, idealy no more dependency setup required.)
+   boost-v1.86.0 (minimum dependencies of boost are under ./third_party, ideally no more dependency setup required.)
 
 3. Build
 
-   cmake build file_server and file_client seperately
+   use cmake to build ./file_server and ./file_client
 
 
 ## Server usage example
@@ -29,7 +29,7 @@ Please see details in [C4 diagrams](https://github.com/webbercyt/file_service/bl
 	> file_server 0.0.0.0 80 4 /usr/files/server
 	
 	
-	* To shut down the server, use the 'x' command
+* To shut down the server, use the 'x' command
 	>x
 
 
@@ -41,7 +41,7 @@ Please see details in [C4 diagrams](https://github.com/webbercyt/file_service/bl
 	> file_client 192.168.0.1 80 /usr/files/client
 	
 	
-	To shut down the client, use the 'x' command
+To shut down the client, use the 'x' command
 	>x
 
 
