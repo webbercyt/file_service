@@ -12,14 +12,9 @@
 
 namespace json = boost::json;
 
-const std::string file_list = "-list";
-const std::string file_all = "-all";
-const std::string file_single = "-f=";
-
-const std::map<std::string, std::string, std::less<>> scope_map_ = { 
-    {file_list,     "list"}, 
-    {file_all,      "all"}, 
-    {file_single,   "single"} };
+const std::string file_list = "-l";
+const std::string file_all = "-a";
+const std::string file_single = "-s";
 
 command_handler::command_handler(
     std::shared_ptr<session> session, 
@@ -144,6 +139,6 @@ std::string command_handler::get_file_name(std::string_view param) const
 
     return std::string(
         param.substr(
-            p + file_single.length(), 
+            p + file_single.length() + 1, 
             param.length() - p - file_single.length()));
 }
