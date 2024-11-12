@@ -23,8 +23,8 @@ int main(int argc, char** argv)
         std::cerr <<
             "Usage: file_server <host> <port> <threads> <file_root_path>\n" <<
             "Example:\n" <<
-            "    file_server 0.0.0.1 80 4 /usr/file\n" <<
-            "    file_server 127.0.0.1 8080 4 c:/source/files\n";
+            "    file_server 0.0.0.0 80 4 /usr/file\n" <<
+            "    file_server 0.0.0.0 8080 4 c:/source/files\n";
         return EXIT_FAILURE;
     }
 
