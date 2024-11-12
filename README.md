@@ -103,7 +103,7 @@ JSON messages have been defined to indicate requests and results
    * uuid: unique message id, used to trace response
    * method: "get"
    * target: file name, e.g. get_request_target.txt
-   * context: binary context of file
+   * context: binary encoded context of file
 	```
 	Examples
 	{
