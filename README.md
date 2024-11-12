@@ -118,7 +118,7 @@ JSON messages have been defined to indicate requests and responses
 * Response (from server to client)
    * uuid: unique message id, used to trace request
    * response: "accepted" or "rejected"
-   * reason: interpretation of response (optional) 
+   * reason (optional): interpretation of response 
 	```
 	Examples
 	{
