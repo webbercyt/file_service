@@ -9,6 +9,11 @@
 
 int main(int argc, char** argv)
 {
+#ifdef _DEBUG
+    auto const host = "192.168.68.60";
+    auto const port = "8080";
+    auto const path = "c:/users/cheny/source/repos/resources/client";
+#else
     if (argc != 4)
     {
         std::cerr <<
@@ -22,6 +27,7 @@ int main(int argc, char** argv)
     auto const host = argv[1];
     auto const port = argv[2];
     auto const path = argv[3];
+#endif
 
     auto file_manager_ = std::make_shared<binary_file_manager>(path);
 

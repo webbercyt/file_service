@@ -70,6 +70,8 @@ int main(int argc, char** argv)
     for (auto& t : v)
         t.join();
 
+    file_manager->stop();
+
     if (exit.joinable())
         exit.join();
 

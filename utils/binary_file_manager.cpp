@@ -6,11 +6,19 @@
 #include <iostream>
 #include <fstream>
 #include <sstream>
+#include <chrono>
 
 binary_file_manager::binary_file_manager(const std::string& path)
 	: root_path_(path)
 {
 	create_root_folder();
+	write_thread_ = std::thread(&binary_file_manager::do_write, this);
+}
+
+binary_file_manager::~binary_file_manager()
+{
+	if (write_thread_.joinable())
+		write_thread_.join();
 }
 
 bool binary_file_manager::read(std::string_view file_name, std::string& context) const
@@ -80,13 +88,13 @@ bool binary_file_manager::read(std::string_view file_name, std::string& context,
 	return false;
 }
 
-bool binary_file_manager::write(std::string_view file_name, std::string_view context) const
+bool binary_file_manager::write(const std::string& file_name, const std::string& context)
 {
 	std::string error;
 	return write(file_name, context, error);
 }
 
-bool binary_file_manager::write(std::string_view file_name, std::string_view context, std::string& error) const
+bool binary_file_manager::write(const std::string& file_name, const std::string& context, std::string& error)
 {
 	if (file_name.empty())
 	{
@@ -95,35 +103,9 @@ bool binary_file_manager::write(std::string_view file_name, std::string_view con
 		return false;
 	}
 
-	std::string path = root_path_;
-	path.append("/");
-	path.append(file_name);
-
-	try
-	{
-		std::ofstream out_file(path, std::ios::binary);
-		if (!out_file.is_open())
-		{
-			error = text::fail_open_file;
-			logger::error(error);
-			return false;
-		}
-
-		std::string decoded_context;
-		boost::algorithm::unhex(context.begin(), context.end(), std::back_inserter(decoded_context));
-
-		out_file.write(decoded_context.c_str(), decoded_context.size());
-		out_file.close();
-
-		return true;
-	}
-	catch (const std::filesystem::filesystem_error& e)
-	{
-		error = text::filesystem_error + std::string(e.what());
-		logger::error(error);
-	}
-	
-	return false;
+	std::scoped_lock lock(write_mutex_);
+	write_queue_.push(std::make_pair(file_name, context));
+	return true;
 }
 
 std::list<std::string> binary_file_manager::get_file_list() const
@@ -155,4 +137,61 @@ void binary_file_manager::create_root_folder() const
 	{
 		logger::error(text::filesystem_error + std::string(e.what()));
 	}
+}
+
+void binary_file_manager::do_write()
+{
+	while (!stop_)
+	{
+		std::pair<std::string, std::string> data 
+			= std::make_pair("", "");
+
+		{
+			std::scoped_lock lock(write_mutex_);
+			if (!write_queue_.empty())
+			{
+				data = write_queue_.front();
+				write_queue_.pop();
+			}
+		}
+
+		if (data.first.empty())
+		{
+			//todo: wait for signal to break sleep
+			std::this_thread::sleep_for(std::chrono::milliseconds(5));
+			continue;
+		}
+
+		std::string path = root_path_;
+		path.append("/");
+		path.append(data.first);
+
+		try
+		{
+			std::ofstream out_file(path, std::ios::binary);
+			if (!out_file.is_open())
+			{
+				logger::error(text::fail_open_file);
+				continue;
+			}
+
+			std::string decoded_context;
+			boost::algorithm::unhex(
+				data.second.begin(), 
+				data.second.end(), 
+				std::back_inserter(decoded_context));
+
+			out_file.write(decoded_context.c_str(), decoded_context.size());
+			out_file.close();
+		}
+		catch (const std::filesystem::filesystem_error& e)
+		{
+			logger::error(text::filesystem_error + std::string(e.what()));
+		}
+	}
+}
+
+void binary_file_manager::stop()
+{
+	stop_ = true;
 }

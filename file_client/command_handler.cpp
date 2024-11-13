@@ -45,6 +45,7 @@ void command_handler::handle(const std::string& command)
     if (command == text::x)
     {
         session_->close();
+        file_manager_->stop();
         stop_ = true;
         return;
     }
