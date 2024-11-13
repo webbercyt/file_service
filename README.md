@@ -25,6 +25,14 @@ Please see details in [C4 diagrams](https://github.com/webbercyt/file_service/bl
 
 * To start the server, run the command: _file_server {host} {port} {threads} {dir}_
 
+  	* _{host}_: ip address or domain name of the server
+
+   	* _{port}_: port number the server is listening to
+
+  	* _{threads}_: number of thread the I/O service running on
+
+  	* _{dir}_: directory in server endpoint where files are read from or written to
+
 	example: 
 	> file_server 0.0.0.0 80 4 /usr/files/server
 	
@@ -36,6 +44,12 @@ Please see details in [C4 diagrams](https://github.com/webbercyt/file_service/bl
 ## Client usage example
 
 * To start the client, run the command: _file_client {host} {port} {dir}_
+
+	* _{host}_: ip address or domain name of the server
+
+  	* _{port}_: port number the server is listening to
+
+  	* _{dir}_: directory in client endpoint where files are read from or written to
 
 	example: 
 	> file_client 192.168.0.1 80 /usr/files/client
@@ -77,11 +91,16 @@ To shut down the client, use the 'x' command
 JSON messages have been defined to indicate requests and responses
 
 * Get file request message (from client to server)
-   * uuid: unique message id, used to trace response
-   * method: "get"
-   * scope: "single" = single file; "all" = all valid files
-   * target: file name, e.g. get_request_target.txt
- 	```
+   
+   * _"uuid"_: unique message id, used to trace response
+   
+   * _"method"_: "get"
+   
+   * _"scope"_: "single" = single file; "all" = all valid files
+   
+   * _"target"_: file name, e.g. get_request_target.txt
+
+  	```
 	Examples
 	
 	{
@@ -100,11 +119,16 @@ JSON messages have been defined to indicate requests and responses
 
 
 * Post file request message (from client to server, or verse)
+
    * uuid: unique message id, used to trace response
-   * method: "get"
-   * target: file name, e.g. get_request_target.txt
-   * context: binary encoded context of file
-	```
+
+   * _"method"_: "get"
+
+   * _"target"_: file name, e.g. get_request_target.txt
+
+   * _"context"_: binary encoded context of file
+
+ 	```
 	Examples
 	{
 		"uuid":"fd6b4eac-e386-4377-b4a5-0ec2cd182490"
@@ -116,9 +140,13 @@ JSON messages have been defined to indicate requests and responses
 
 
 * Response (from server to client)
-   * uuid: unique message id, used to trace request
-   * response: "accepted" or "rejected"
-   * reason (optional): interpretation of response 
+   
+   * _"uuid"_: unique message id, used to trace request
+   
+   * _"response"_: "accepted" or "rejected"
+   
+   * _"reason"_ (optional): interpretation of response 
+
 	```
 	Examples
 	{
@@ -133,4 +161,4 @@ JSON messages have been defined to indicate requests and responses
 
 * Handle errors in UTF-8 encoded data
 
-Based on RFC 6455, when an endpoint is to interpret a byte stream as UTF-8 (e.g. file name) but finds that the byte stream is not, in fact, a valid UTF-8 stream, that endpoint fails the webSocket connection. What shall be further done is to handle non-UTF-8 stream properly. 
+Based on RFC 6455, when an endpoint is to interpret a byte stream as UTF-8 (e.g. file name) but finds that the byte stream is not, in fact, a valid UTF-8 stream, that endpoint fails the webSocket connection. What shall be further done is to handle non-UTF-8 stream properly, a potential solution is to introduce wide character upon file manipulations. 
