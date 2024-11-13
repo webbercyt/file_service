@@ -91,11 +91,16 @@ To shut down the client, use the 'x' command
 JSON messages have been defined to indicate requests and responses
 
 * Get file request message (from client to server)
-   * uuid: unique message id, used to trace response
-   * method: "get"
-   * scope: "single" = single file; "all" = all valid files
-   * target: file name, e.g. get_request_target.txt
- 	```
+   
+   * _"uuid"_: unique message id, used to trace response
+   
+   * _"method"_: "get"
+   
+   * _"scope"_: "single" = single file; "all" = all valid files
+   
+   * _"target"_: file name, e.g. get_request_target.txt
+
+  	```
 	Examples
 	
 	{
@@ -114,11 +119,16 @@ JSON messages have been defined to indicate requests and responses
 
 
 * Post file request message (from client to server, or verse)
+
    * uuid: unique message id, used to trace response
-   * method: "get"
-   * target: file name, e.g. get_request_target.txt
-   * context: binary encoded context of file
-	```
+
+   * _"method"_: "get"
+
+   * _"target"_: file name, e.g. get_request_target.txt
+
+   * _"context"_: binary encoded context of file
+
+ 	```
 	Examples
 	{
 		"uuid":"fd6b4eac-e386-4377-b4a5-0ec2cd182490"
@@ -130,9 +140,13 @@ JSON messages have been defined to indicate requests and responses
 
 
 * Response (from server to client)
-   * uuid: unique message id, used to trace request
-   * response: "accepted" or "rejected"
-   * reason (optional): interpretation of response 
+   
+   * _"uuid"_: unique message id, used to trace request
+   
+   * _"response"_: "accepted" or "rejected"
+   
+   * _"reason"_ (optional): interpretation of response 
+
 	```
 	Examples
 	{
