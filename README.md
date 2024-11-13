@@ -161,4 +161,4 @@ JSON messages have been defined to indicate requests and responses
 
 * Handle errors in UTF-8 encoded data
 
-Based on RFC 6455, when an endpoint is to interpret a byte stream as UTF-8 (e.g. file name) but finds that the byte stream is not, in fact, a valid UTF-8 stream, that endpoint fails the webSocket connection. What shall be further done is to handle non-UTF-8 stream properly. 
+Based on RFC 6455, when an endpoint is to interpret a byte stream as UTF-8 (e.g. file name) but finds that the byte stream is not, in fact, a valid UTF-8 stream, that endpoint fails the webSocket connection. What shall be further done is to handle non-UTF-8 stream properly, a potential solution is to introduce wide character upon file manipulations. 
