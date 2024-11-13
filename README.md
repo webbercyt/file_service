@@ -25,6 +25,14 @@ Please see details in [C4 diagrams](https://github.com/webbercyt/file_service/bl
 
 * To start the server, run the command: _file_server {host} {port} {threads} {dir}_
 
+  	* _{host}_: ip address or domain name of the server
+
+   	* _{port}_: port number the server is listening to
+
+  	* _{threads}_: number of thread the I/O service running on
+
+  	* _{dir}_: directory in server endpoint where files are read from or written to
+
 	example: 
 	> file_server 0.0.0.0 80 4 /usr/files/server
 	
@@ -36,6 +44,12 @@ Please see details in [C4 diagrams](https://github.com/webbercyt/file_service/bl
 ## Client usage example
 
 * To start the client, run the command: _file_client {host} {port} {dir}_
+
+	* _{host}_: ip address or domain name of the server
+
+  	* _{port}_: port number the server is listening to
+
+  	* _{dir}_: directory in client endpoint where files are read from or written to
 
 	example: 
 	> file_client 192.168.0.1 80 /usr/files/client
