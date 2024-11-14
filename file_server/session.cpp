@@ -176,13 +176,7 @@ void session::consume_buffer()
     }
     case message_type::e_mt_post:
     {
-        //log message received without context, as context could be long
-        const std::string context_prefix = (const char[12])"\"context\":\"";
-        auto p = data.find(context_prefix);
-        p == std::string::npos ?
-            logger::info(text::received + data) :
-            logger::info(text::received + data.substr(0, p + context_prefix.length() - 1) + "...}");
-
+        logger::info(text::received + msg->printable_data());
         process_post_message(msg);
         break;
     }
