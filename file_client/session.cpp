@@ -31,13 +31,7 @@ void session::run(char const* host, char const* port, std::shared_ptr<binary_fil
 
 void session::send(const std::string& s)
 {
-    const std::string context_prefix = (const char[12])"\"context\":\"";
-
-    //log message sent without context, as context could be long
-    auto p = s.find(context_prefix);
-    p == std::string::npos ?
-        logger::info(text::sent + s) :
-        logger::info(text::sent + s.substr(0, p + context_prefix.length() - 1) + "...}");
+    logger::info(text::sent + logger::hide_context(s));
 
     net::post(
         ws_.get_executor(),
@@ -199,6 +193,7 @@ void session::consume_read_buffer()
         logger::info(text::received + data);
         break;
     case message_type::e_mt_post:
+        logger::info(text::received + logger::hide_context(data));
         if (auto post_msg = std::dynamic_pointer_cast<post_message>(msg))
             file_manager_->write(
                 post_msg->target_,

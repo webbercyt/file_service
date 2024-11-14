@@ -29,4 +29,16 @@ namespace logger
 			<< what 
 			<< std::endl;
 	}
+
+	static std::string hide_context(const std::string& s)
+	{
+		const std::string context_prefix = (const char[12])"\"context\":\"";
+
+		//replace contexrt with "...", as context is binary encoded being not human readable
+		auto p = s.find(context_prefix);
+		return
+			p == std::string::npos
+			? s 
+			: s.substr(0, p + context_prefix.length() - 1) + "...}";
+	}
 };

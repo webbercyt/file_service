@@ -120,6 +120,7 @@ void session::on_write(
         return logger::fail(ec, text::write.c_str());
 
     // Remove the string from the queue
+    logger::info(text::sent + logger::hide_context(queue_.front()));
     queue_.pop();
 
     // send the next message if any
