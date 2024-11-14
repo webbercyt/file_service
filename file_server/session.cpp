@@ -181,7 +181,7 @@ void session::consume_buffer()
     }
     case message_type::e_mt_post:
     {
-        logger::info(text::received + msg->printable_data());
+        logger::info(text::received + logger::hide_context(data));
         process_post_message(msg);
         break;
     }
