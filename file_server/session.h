@@ -2,10 +2,12 @@
 
 #include <boost/beast/core.hpp>
 #include <boost/beast/websocket.hpp>
+#include <thread>
 #include <memory>
 #include <string>
 #include <queue>
 #include <mutex>
+#include <atomic>
 
 namespace beast = boost::beast;         
 namespace http = beast::http;           
@@ -57,6 +59,10 @@ private:
     beast::flat_buffer buffer_;
     std::queue<std::string> queue_;
     std::shared_ptr<binary_file_manager> file_manager_;
+
+
+    std::atomic_bool stop_send_ = false;
+    std::thread send_thread_;
 
     static uint64_t clients_;
     static std::mutex clients_mutex_;

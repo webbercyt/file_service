@@ -23,6 +23,10 @@ session::session(tcp::socket&& socket, std::shared_ptr<binary_file_manager> file
 
 session::~session()
 {
+    stop_send_ = true;
+    if (send_thread_.joinable())
+        send_thread_.join();
+
     std::scoped_lock<std::mutex>lock(clients_mutex_);
     clients_--;
     logger::info(
@@ -120,6 +124,7 @@ void session::on_write(
         return logger::fail(ec, text::write.c_str());
 
     // Remove the string from the queue
+    logger::info(text::sent + logger::hide_context(queue_.front()));
     queue_.pop();
 
     // send the next message if any
@@ -176,13 +181,7 @@ void session::consume_buffer()
     }
     case message_type::e_mt_post:
     {
-        //log message received without context, as context could be long
-        const std::string context_prefix = (const char[12])"\"context\":\"";
-        auto p = data.find(context_prefix);
-        p == std::string::npos ?
-            logger::info(text::received + data) :
-            logger::info(text::received + data.substr(0, p + context_prefix.length() - 1) + "...}");
-
+        logger::info(text::received + logger::hide_context(data));
         process_post_message(msg);
         break;
     }
@@ -226,16 +225,23 @@ void session::process_get_message(std::shared_ptr<json_message_base> msg)
     case get_scope::e_gs_all:
     {
         succesed = true;
-        for (const auto& file_name : file_manager_->get_file_list())
-        {
-            post_message post_msg;
-            std::string context;
-            if (!file_manager_->read(file_name, context))
-                continue;
-            post_msg.target_ = file_name;
-            post_msg.context_ = context;
-            send(post_msg.serialize());
-        }
+        send_thread_ = std::thread([&] {
+            for (const auto& file_name : file_manager_->get_file_list())
+            {
+                std::string context;
+                if (!file_manager_->read(file_name, context))
+                    continue;
+
+                post_message post_msg;
+                post_msg.target_ = file_name;
+                post_msg.context_ = context;
+
+                if (stop_send_)
+                    break;
+                else
+                    send(post_msg.serialize());
+            }
+            });
         break;
     }
     default:

@@ -10,7 +10,7 @@
 int main(int argc, char** argv)
 {
 #ifdef _DEBUG
-    auto const host = "192.168.68.60";
+    auto const host = "127.0.0.1";
     auto const port = "8080";
     auto const path = "c:/users/cheny/source/repos/resources/client";
 #else

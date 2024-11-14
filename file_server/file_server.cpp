@@ -18,6 +18,12 @@ using tcp = boost::asio::ip::tcp;
 
 int main(int argc, char** argv)
 {
+#ifdef _DEBUG
+    auto const address = net::ip::make_address("127.0.0.1");
+    auto const port = 8080;
+    auto const threads = 1;
+    auto const file_root_path = "c:/users/cheny/source/repos/resources/server";
+#else
     if (argc != 5)
     {
         std::cerr <<
@@ -32,6 +38,7 @@ int main(int argc, char** argv)
     auto const port = static_cast<unsigned short>(std::atoi(argv[2]));
     auto const threads = std::max<int>(1, std::atoi(argv[3]));
     auto const file_root_path = argv[4];
+#endif
 
     auto file_manager = std::make_shared<binary_file_manager>(file_root_path);
 
