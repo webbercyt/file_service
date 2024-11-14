@@ -23,6 +23,10 @@ session::session(tcp::socket&& socket, std::shared_ptr<binary_file_manager> file
 
 session::~session()
 {
+    stop_send_ = true;
+    if (send_thread_.joinable())
+        send_thread_.join();
+
     std::scoped_lock<std::mutex>lock(clients_mutex_);
     clients_--;
     logger::info(
@@ -221,16 +225,23 @@ void session::process_get_message(std::shared_ptr<json_message_base> msg)
     case get_scope::e_gs_all:
     {
         succesed = true;
-        for (const auto& file_name : file_manager_->get_file_list())
-        {
-            post_message post_msg;
-            std::string context;
-            if (!file_manager_->read(file_name, context))
-                continue;
-            post_msg.target_ = file_name;
-            post_msg.context_ = context;
-            send(post_msg.serialize());
-        }
+        send_thread_ = std::thread([&] {
+            for (const auto& file_name : file_manager_->get_file_list())
+            {
+                std::string context;
+                if (!file_manager_->read(file_name, context))
+                    continue;
+
+                post_message post_msg;
+                post_msg.target_ = file_name;
+                post_msg.context_ = context;
+
+                if (stop_send_)
+                    break;
+                else
+                    send(post_msg.serialize());
+            }
+            });
         break;
     }
     default:
