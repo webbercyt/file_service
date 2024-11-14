@@ -38,11 +38,6 @@ struct json_message_base
 		return json::serialize(obj);
 	}
 
-	virtual std::string printable_data()
-	{
-		return serialize();
-	}
-
 	static std::shared_ptr<json_message_base> parse(const std::string& s)
 	{
 		json::object obj;
@@ -222,16 +217,5 @@ struct post_message : json_message_base
 		obj["method"] = "post";
 		obj["target"] = target_;
 		obj["context"] = context_;
-	}
-
-	//printable data replaces context with '...', as context could be long
-	std::string printable_data() final
-	{
-		json::object obj;
-		json_message_base::to_json(obj); 
-		obj["method"] = "post";
-		obj["target"] = target_;
-		obj["context"] = "...";
-		return json::serialize(obj);
 	}
 };
